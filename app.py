@@ -10,7 +10,7 @@ if "unidad_agua" not in st.session_state:
 if "unidad_quimico" not in st.session_state:
     st.session_state["unidad_quimico"] = "gal/min"
 
-# --- Logo y título centrados ---
+# --- Logo y título ---
 st.markdown(
     """
     <div style="text-align: center;">
@@ -21,19 +21,17 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Layout principal: sliders a la izquierda, resultados a la derecha ---
+# --- Sliders ---
 col_sliders, col_resultados = st.columns([1, 1])
-
 with col_sliders:
     bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
     gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 
-# --- Cálculos hidráulica ---
+# --- Cálculos ---
 gal_per_min = bpm * 42
 l_per_min = gal_per_min * 3.785
 m3_per_h = l_per_min * 0.06
 
-# --- Cálculos químico ---
 q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
@@ -47,57 +45,47 @@ def cambiar_unidad_quimico():
     idx = unidades.index(st.session_state["unidad_quimico"])
     st.session_state["unidad_quimico"] = unidades[(idx + 1) % len(unidades)]
 
-# --- Estilos de tarjetas ---
-card_style = """
-    border:1px solid #555; border-radius:8px;
-    padding:20px; width:140px; height:140px;
-    text-align:center;
-"""
+# --- Estilos de cards ---
+def render_card(valor, unidad):
+    return f"""
+    <div style="border:1px solid #555; border-radius:8px;
+                padding:20px; width:140px; height:140px;
+                display:flex; flex-direction:column;
+                align-items:center; justify-content:center;
+                text-align:center;">
+        <div style="font-size:28px; font-weight:bold;">{valor}</div>
+        <div style="font-size:14px; color:gray;">{unidad}</div>
+    </div>
+    """
 
 # --- Resultados ---
 with col_resultados:
-    # --- Caudal de Agua ---
+    # --- Caudal Agua ---
     st.markdown("### 💧 Caudal de Agua")
 
     if st.session_state["unidad_agua"] == "m³/h":
-        valor_agua = m3_per_h
+        valor_agua = f"{m3_per_h:.1f}"
     else:
-        valor_agua = bpm
+        valor_agua = f"{bpm:.2f}"
 
-    if st.button(
-        f"""
-        <div style="{card_style}">
-            <div style="font-size:28px; font-weight:bold;">{valor_agua:.1f}</div>
-            <div style="font-size:14px; color:gray;">{st.session_state["unidad_agua"]}</div>
-        </div>
-        """,
-        key="agua_card",
-        on_click=cambiar_unidad_agua,
-        help="Click para cambiar unidad",
-        use_container_width=False,
-    ):
-        pass
+    c1, _ = st.columns([1, 3])
+    with c1:
+        if st.button("agua", key="agua_btn"):
+            cambiar_unidad_agua()
+        st.markdown(render_card(valor_agua, st.session_state["unidad_agua"]), unsafe_allow_html=True)
 
     # --- Caudal Químico ---
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
 
     if st.session_state["unidad_quimico"] == "gal/min":
-        valor_q = q_quimico_gal_min
+        valor_q = f"{q_quimico_gal_min:.2f}"
     elif st.session_state["unidad_quimico"] == "L/min":
-        valor_q = q_quimico_l_min
+        valor_q = f"{q_quimico_l_min:.2f}"
     else:
-        valor_q = q_quimico_l_h
+        valor_q = f"{q_quimico_l_h:.0f}"
 
-    if st.button(
-        f"""
-        <div style="{card_style}">
-            <div style="font-size:28px; font-weight:bold;">{valor_q:.2f}</div>
-            <div style="font-size:14px; color:gray;">{st.session_state["unidad_quimico"]}</div>
-        </div>
-        """,
-        key="quimico_card",
-        on_click=cambiar_unidad_quimico,
-        help="Click para cambiar unidad",
-        use_container_width=False,
-    ):
-        pass
+    c2, _ = st.columns([1, 3])
+    with c2:
+        if st.button("quimico", key="quimico_btn"):
+            cambiar_unidad_quimico()
+        st.markdown(render_card(valor_q, st.session_state["unidad_quimico"]), unsafe_allow_html=True)
