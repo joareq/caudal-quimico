@@ -11,14 +11,7 @@ st.markdown(
     <div style="text-align: center;">
         <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/logo.png" width="250">
         <h1 style="margin-top: 10px;">CALCULO CAUDAL QUIMICO</h1>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-st.markdown(
-    """
-    <style>
-    /* Número encima del slider */
+            /* Número encima del slider */
     .stSlider span[data-baseweb="slider-value-label"] {
         background-color: transparent !important;
         color: #00AEEF !important;
@@ -26,10 +19,11 @@ st.markdown(
         font-size: 500px !important;       /* 👈 Ajustá este valor a tu gusto */
         text-shadow: 1px 1px 2px #00000080; /* sombra sutil para visibilidad */
     }
-    </style>
+    </div>
     """,
     unsafe_allow_html=True
 )
+
 # --- Inputs con sliders ---
 col1, col2 = st.columns(2)
 with col1:
@@ -59,6 +53,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
