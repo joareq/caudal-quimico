@@ -11,7 +11,15 @@ if "unidad_quimico" not in st.session_state:
     st.session_state["unidad_quimico"] = "gal/min"
 
 # --- Logo y título ---
-st.title("Cálculo caudal químico")
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/logo.png" width="250">
+        <h1 style="margin-top: 10px;">CALCULO CAUDAL QUIMICO</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Sliders ---
 bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
@@ -43,7 +51,10 @@ if st.button(valor_agua, key="btn_agua"):
     st.rerun()
 
 # --- Caudal Químico ---
-st.subheader("🧪 Caudal Químico")
+st.markdown(
+    "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico",
+    unsafe_allow_html=True
+)
 
 if st.session_state["unidad_quimico"] == "gal/min":
     valor_q = f"{q_quimico_gal_min:.2f} gal/min"
