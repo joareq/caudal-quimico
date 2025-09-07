@@ -49,7 +49,7 @@ q_quimico_l_h     = q_quimico_l_min * 60
 # --- Layout ---
 col1, col2 = st.columns(2)
 
-# Caudal Agua
+# Caudal Agua (con tarjeta igual que químico)
 with col1:
     st.markdown("### 💧 Caudal de Agua")
 
@@ -67,10 +67,19 @@ with col1:
                 st.session_state.edit_agua = False
                 st.rerun()
     else:
-        # Igual que químicos: cuadrado clickeable
-        if st.button(f"{int(round(m3_per_h))} m³/h", key="agua_card"):
+        # Tarjeta clickeable con mismo estilo que químico
+        if st.button("", key="agua_card", help="Haz clic para editar"):
             st.session_state.edit_agua = True
             st.rerun()
+        st.markdown(
+            f"""
+            <div class="card" onclick="window.parent.document.querySelector('button[kind=primary][data-testid=stButton][aria-label=agua_card]').click();">
+                <div class="value">{int(round(m3_per_h))}</div>
+                <div class="unit">m³/h</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 # Caudal Químico
 with col2:
