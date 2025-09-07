@@ -30,11 +30,11 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Estado para modo edición del caudal agua ---
+# --- Estado para edición ---
 if "edit_mode" not in st.session_state:
     st.session_state.edit_mode = False
 
-# --- CSS general ---
+# --- CSS ---
 st.markdown("""
 <style>
 .card {
@@ -60,7 +60,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Sección de resultados ---
+# --- Resultados ---
 col1, col2 = st.columns(2)
 
 with col1:
@@ -70,16 +70,13 @@ with col1:
     trig = st.button("AGUA_EDIT", key="agua_trigger_btn")
     st.markdown("""
     <style>
-    button[kind="secondary"] p:contains("AGUA_EDIT") {
-        display:none !important;
-    }
+    button[kind="secondary"] p:contains("AGUA_EDIT"),
     button:has(> div p:contains("AGUA_EDIT")) {
         display:none !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # Alterna modo edición
     if trig:
         st.session_state.edit_mode = not st.session_state.edit_mode
 
@@ -100,7 +97,7 @@ with col1:
         )
 
 with col2:
-    st.markdown("### 🏭 Caudal Químico")
+    st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
     with c1:
