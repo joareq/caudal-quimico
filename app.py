@@ -48,6 +48,7 @@ st.markdown("""
     border: 1px solid #888;
     border-radius: 8px;
     text-align: center;
+    cursor: pointer;
 }
 .card .value {
     font-size: 28px;
@@ -73,12 +74,13 @@ with col1:
             step=1.0,
             key="agua_input"
         )
-        if new_val != st.session_state.agua_val:
+        confirm = st.button("✅ Confirmar")
+        if confirm:
             st.session_state.agua_val = int(new_val)
-        if st.button("✅ Confirmar edición"):
             st.session_state.edit_mode = False
     else:
-        if st.button(f"**{st.session_state.agua_val}**\n m³/h", key="agua_display"):
+        # Un solo click sobre la tarjeta cambia a modo edición
+        if st.button(f"{st.session_state.agua_val} m³/h", key="agua_card"):
             st.session_state.edit_mode = True
 
 with col2:
