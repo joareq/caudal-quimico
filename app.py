@@ -7,42 +7,31 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 st.markdown(
     """
     <style>
-    /* Estilo base para todos los botones */
     div[data-testid="stButton"] button {
         color: white;
-        font-size: 32px;
+        font-size: 28px;
         font-weight: bold;
         border: none;
         border-radius: 50%;
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
         text-align: center;
         cursor: pointer;
         box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
         transition: all 0.1s ease-in-out;
     }
-    /* Botón rojo (restar) */
-    div[data-testid="stButton"] button.minus {
-        background-color: #dc3545;
-    }
-    div[data-testid="stButton"] button.minus:hover {
-        background-color: #a71d2a;
+    div[data-testid="stButton"] button:hover {
         transform: scale(1.05);
     }
-    /* Botón verde (sumar) */
-    div[data-testid="stButton"] button.plus {
-        background-color: #28a745;
-    }
-    div[data-testid="stButton"] button.plus:hover {
-        background-color: #1c7430;
-        transform: scale(1.05);
-    }
+    /* Botones de control: rojo para -, verde para + */
+    .minus {background-color: #dc3545;}
+    .plus {background-color: #28a745;}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# --- Logo y título centrados ---
+# --- Logo y título ---
 st.markdown(
     """
     <div style="text-align: center;">
@@ -61,7 +50,7 @@ if "bpm" not in st.session_state:
 
 # --- Controles GPT ---
 st.subheader("Control de GPT")
-col1, col2, col3 = st.columns([1, 3, 1])
+col1, col2, col3 = st.columns([1, 4, 1])
 with col1:
     if st.button("➖", key="gpt_down"):
         st.session_state.gpt = max(0.0, st.session_state.gpt - 0.1)
@@ -78,7 +67,7 @@ with col3:
 
 # --- Controles BPM ---
 st.subheader("Control de BPM")
-col4, col5, col6 = st.columns([1, 3, 1])
+col4, col5, col6 = st.columns([1, 4, 1])
 with col4:
     if st.button("➖", key="bpm_down"):
         st.session_state.bpm = max(0.5, st.session_state.bpm - 0.1)
