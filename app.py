@@ -24,19 +24,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Botón Configuración ---
-if st.button("⚙️ Configuración"):
-    st.session_state["show_config"] = not st.session_state["show_config"]
-
-if st.session_state["show_config"]:
-    st.subheader("⚙️ Parámetros de la Bomba")
-    Qmax = st.number_input("Caudal máximo bomba [L/min]", min_value=1.0, value=100.0, step=1.0, key="Qmax")
-    Fmax = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=75.0, step=1.0, key="Fmax")
-else:
-    # Valores por defecto si no se configuró
-    Qmax = 100.0
-    Fmax = 75.0
-
 # --- Sliders principales ---
 bpm = st.slider("Seleccione BPM", 0.5, 20.0, 5.0, 0.1)
 gpt = st.slider("Seleccione GPT", 0.0, 10.0, 1.5, 0.1)
@@ -89,6 +76,10 @@ if st.button(valor_q, key="btn_quimico"):
 # --- Cálculo Frecuencia según caudal químico ---
 st.subheader("⚡ Cálculo Frecuencia Variador")
 
+# Valores por defecto
+Qmax = 100.0
+Fmax = 75.0
+
 Qset = q_quimico_l_min  # se toma el caudal químico en L/min
 
 if Qset > Qmax:
@@ -102,3 +93,26 @@ else:
         st.metric("Velocidad [%]", f"{vel:.1f}")
     with col2:
         st.metric("Frecuencia [Hz]", f"{fset:.2f}")
+
+# --- CONFIGURACIÓN AL FINAL ---
+st.markdown("---")  # separador visual
+if st.button("⚙️ Configuración"):
+    st.session_state["show_config"] = not st.session_state["show_config"]
+
+if st.session_state["show_config"]:
+    st.subheader("⚙️ Parámetros de la Bomba")
+    Qmax = st.number_input("Caudal máximo bomba [L/min]", min_value=1.0, value=100.0, step=1.0, key="Qmax")
+    Fmax = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=75.0, step=1.0, key="Fmax")
+
+    # recalcular con valores configurados
+    if Qset > Qmax:
+        st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
+    else:
+        vel = (Qset / Qmax) * 100
+        fset = (Qset / Qmax) * Fmax
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Velocidad [%]", f"{vel:.1f}")
+        with col2:
+            st.metric("Frecuencia [Hz]", f"{fset:.2f}")
