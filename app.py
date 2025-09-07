@@ -13,12 +13,25 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Sliders ---
+# --- Inicializar estado ---
+if "agua_val" not in st.session_state:
+    st.session_state.agua_val = 48  # valor inicial m³/h
+if "edit_mode" not in st.session_state:
+    st.session_state.edit_mode = False
+
+# --- Sincronizar slider con valor agua ---
+# agua_val (m³/h) → bpm (barriles/min)
+st.session_state.bpm = st.session_state.agua_val / 2.52 / 42  
+
 col1, col2 = st.columns(2)
 with col1:
     gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 with col2:
-    bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
+    bpm = st.slider(
+        "Seleccione BPM (barriles por minuto)",
+        0.5, 20.0, float(st.session_state.bpm), 0.1,
+        key="bpm_slider"
+    )
 
 # --- Cálculos ---
 gal_per_min = bpm * 42
@@ -29,13 +42,7 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Estado de edición ---
-if "edit_mode" not in st.session_state:
-    st.session_state.edit_mode = False
-if "agua_val" not in st.session_state:
-    st.session_state.agua_val = round(m3_per_h)
-
-# --- CSS para tarjetas ---
+# --- CSS tarjetas ---
 st.markdown("""
 <style>
 .card {
@@ -69,18 +76,18 @@ with col1:
 
     if st.session_state.edit_mode:
         new_val = st.number_input(
-            "Modificar caudal agua (m³/h)",
-            value=float(st.session_state.agua_val),
+            "Editar caudal (m³/h)", 
+            value=float(st.session_state.agua_val), 
             step=1.0,
-            key="agua_input"
+            key="agua_edit"
         )
-        confirm = st.button("✅ Confirmar")
-        if confirm:
-            st.session_state.agua_val = int(new_val)
-            st.session_state.edit_mode = False
+        st.session_state.agua_val = int(new_val)
+        st.session_state.edit_mode = False  # vuelve a mostrar tarjeta
     else:
-        # Un solo click sobre la tarjeta cambia a modo edición
-        if st.button(f"{st.session_state.agua_val} m³/h", key="agua_card"):
+        if st.button(
+            f"{st.session_state.agua_val} m³/h", 
+            key="agua_card"
+        ):
             st.session_state.edit_mode = True
 
 with col2:
