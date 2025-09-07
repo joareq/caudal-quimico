@@ -3,6 +3,20 @@ import streamlit as st
 # --- Configuración de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    /* Número encima del slider */
+    .stSlider span[data-baseweb="slider-value-label"] {
+        background-color: transparent !important;  /* sin fondo */
+        color: #00AEEF !important;                 /* azul Hidrofrac */
+        font-weight: bold !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- Logo y título centrados ---
 st.markdown(
     """
@@ -72,6 +86,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
