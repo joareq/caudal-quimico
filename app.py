@@ -7,21 +7,30 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 st.markdown(
     """
     <style>
-    /* Ajustar slider */
+    /* Quitar franja gris oscura de fondo */
     div[data-baseweb="slider"] {
-        padding-top: 5px;
-        padding-bottom: 5px;
+        background: transparent !important;
     }
     div[data-baseweb="slider"] > div {
-        height: 0.5rem;   /* grosor línea */
-        background: #222; /* color base */
+        background: transparent !important;
     }
+    div[data-baseweb="slider"] > div > div {
+        background: transparent !important;
+    }
+
+    /* Línea del slider */
+    div[data-baseweb="slider"] > div {
+        height: 0.5rem;
+    }
+
+    /* Número del valor */
     div[data-baseweb="slider"] span {
         font-size: 18px !important;
-        color: #00AEEF !important; /* azul hidrofrac */
+        color: #00AEEF !important; /* azul Hidrofrac */
         font-weight: bold;
     }
-    /* Color de la barra y el círculo */
+
+    /* El círculo (thumb) */
     div[data-baseweb="slider"] div[role="slider"] {
         background-color: #00AEEF !important;
         border: 2px solid white !important;
