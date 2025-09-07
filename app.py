@@ -22,8 +22,8 @@ st.markdown(
 )
 
 # --- Sliders ---
-bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
-gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
+bpm = st.slider("Seleccione BPM", 0.5, 20.0, 5.0, 0.1)
+gpt = st.slider("Seleccione GPT", 0.0, 10.0, 1.5, 0.1)
 
 # --- Cálculos ---
 gal_per_min = bpm * 42
@@ -35,7 +35,7 @@ q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
 # --- Caudal Agua ---
-st.subheader("💧 Caudal de Agua")
+st.subheader("💧 Caudal Agua")
 
 if st.session_state["unidad_agua"] == "m³/h":
     valor_agua = f"{m3_per_h:.1f} m³/h"
