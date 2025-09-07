@@ -6,43 +6,35 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 # =====================  Estilos  =====================
 st.markdown("""
 <style>
-/* ---------- cards de químicos ---------- */
+/* ---------- cards ---------- */
 .card {
   width: 120px; height: 120px;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   border:1px solid #ccc; border-radius:8px;
   font-weight:700; margin:6px; background:transparent; color:#fff;
 }
-
-/* número + unidad en cards */
 .card .value { font-size:28px; line-height:1; }
 .card .unit  { font-size:14px; margin-top:6px; }
 
-/* ---------- botón oculto que usamos sólo para detectar click ---------- */
-button[aria-label="agua_card"]{
-  position:absolute; left:-99999px; width:0; height:0; padding:0; margin:0; border:0; opacity:0;
-}
-
-/* ---------- modo edición de Caudal de Agua: number_input “con look de card” ---------- */
+/* ---------- editor (number_input) con look de card ---------- */
 div[data-testid="stNumberInput"].agua-editor{
   width: 120px; height: 120px;
   border:1px solid #ccc; border-radius:8px;
   display:flex; align-items:center; justify-content:center;
-  background:transparent; color:#fff; margin:6px;
+  background:transparent; color:#fff; margin:6px; position:relative;
 }
 div[data-testid="stNumberInput"].agua-editor label{display:none;}
 div[data-testid="stNumberInput"].agua-editor input{
   text-align:center; font-size:28px; font-weight:700;
   background:transparent; color:#fff; border:0; outline:0; width:90%;
 }
-/* unidad dentro del mismo cuadrado (pseudo-elemento) */
 div[data-testid="stNumberInput"].agua-editor:after{
   content: "m³/h";
   position:absolute; bottom:12px; left:0; right:0;
   text-align:center; font-size:14px; font-weight:700; color:#ddd;
 }
 
-/* botones de Guardar/Cancelar más compactos */
+/* botones guardar/cancelar compactos */
 div.agua-actions > div > button{ width:100%; }
 </style>
 """, unsafe_allow_html=True)
@@ -84,12 +76,11 @@ with col1:
   st.markdown("### 💧 Caudal de Agua")
 
   if st.session_state.edit_agua:
-    # editor con look de card (mismo tamaño)
-    # usamos key para leer el valor y clase CSS para “parecer” la card
-    num = st.number_input(" ", value=float(round(m3_per_h, 2)),
-                          step=0.1, label_visibility="collapsed", key="agua_val",
-                          format="%.2f")
-    # forzamos la clase CSS de este number_input
+    # editor “dentro” del cuadrado (mismo look)
+    val = st.number_input(" ", value=float(round(m3_per_h, 2)),
+                          step=0.1, format="%.2f",
+                          label_visibility="collapsed", key="agua_val")
+    # forzamos la clase CSS para que se vea como card
     st.markdown("""
     <script>
       const nodes = window.parent.document.querySelectorAll("div[data-testid='stNumberInput']");
@@ -97,14 +88,14 @@ with col1:
     </script>
     """, unsafe_allow_html=True)
 
-    a1, a2 = st.columns(2, gap="small")
+    a1, a2 = st.columns(2)
     with a1:
       if st.button("✔ Guardar"):
         try:
           val = float(st.session_state.agua_val)
           denom = 42*3.785*0.06
           st.session_state.bpm = max(0.5, min(20.0, val/denom))
-        except:  # si no es número válido, no cambiamos
+        except:
           pass
         st.session_state.edit_agua = False
         st.rerun()
@@ -114,19 +105,35 @@ with col1:
         st.rerun()
 
   else:
-    # botón oculto que usaremos para cambiar a modo edición
-    st.button("", key="agua_card")
-    # tarjeta visible (idéntica a químico) que dispara el click del botón oculto
+    # Botón “oculto” con texto AGUA_EDIT para poder localizarlo desde JS y esconderlo
+    trig = st.button("AGUA_EDIT", key="agua_trigger_btn")
+    # Ocultar ese botón y asignarle un id para click programático
+    st.markdown("""
+    <script>
+      const btns = Array.from(window.parent.document.querySelectorAll('button'));
+      const target = btns.find(b => b.innerText.trim() === 'AGUA_EDIT');
+      if (target){
+        target.id = 'aguaTriggerBTN';
+        target.style.display = 'none';               // lo ocultamos del layout
+      }
+    </script>
+    """, unsafe_allow_html=True)
+
+    # Tarjeta visible; al hacer click llama al botón oculto
     st.markdown(
       f"""
-      <div class="card"
-           onclick="window.parent.document.querySelector('button[aria-label=agua_card]').click();">
+      <div class="card" onclick="const t=window.parent.document.getElementById('aguaTriggerBTN'); if(t) t.click();">
         <div class="value">{int(round(m3_per_h))}</div>
         <div class="unit">m³/h</div>
       </div>
       """,
       unsafe_allow_html=True
     )
+
+    # si el botón oculto fue “clickeado” activamos edición
+    if trig:
+      st.session_state.edit_agua = True
+      st.rerun()
 
 # ---------- Caudal Químico ----------
 with col2:
