@@ -5,26 +5,13 @@ import streamlit as st
 # =====================
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
-# Constantes de conversión
+# Constantes
 GAL_TO_L = 3.785411784
 FACTOR_M3H_POR_BPM = 42 * GAL_TO_L * 0.06  # ≈ 9.5382 m³/h por BPM
 
-# ============
-# Encabezado
-# ============
-st.markdown(
-    """
-    <div style="text-align:center;">
-        <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/logo.png" width="250" />
-        <h1 style="margin-top:10px;">CALCULO CAUDAL QUIMICO</h1>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-# ===================================
-# Estado inicial y funciones de sync
-# ===================================
+# ===================
+# Estado inicial
+# ===================
 if "bpm" not in st.session_state:
     st.session_state.bpm = 5.0
 if "agua_m3h" not in st.session_state:
@@ -43,7 +30,7 @@ def sync_from_agua():
 # =========
 csl1, csl2 = st.columns(2)
 with csl1:
-    gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1, key="gpt")
+    st.session_state.gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 with csl2:
     st.slider(
         "Seleccione BPM (barriles por minuto)",
@@ -54,14 +41,9 @@ with csl2:
     )
 
 # ===================
-# Cálculos hidráulica
+# Cálculos
 # ===================
 gal_per_min = st.session_state.bpm * 42
-l_per_min = gal_per_min * GAL_TO_L
-
-# ===================
-# Cálculos Químico
-# ===================
 q_quimico_gal_min = (st.session_state.gpt / 1000.0) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * GAL_TO_L
 q_quimico_l_h = q_quimico_l_min * 60
@@ -80,14 +62,17 @@ st.markdown(
     }
     .card .value { font-size:30px; font-weight:700; line-height:1; }
     .card .unit  { font-size:14px; color:#cfcfcf; margin-top:6px; }
-    .stNumberInput input {
+    div[data-testid="stNumberInput"] {
+        width: 140px !important;
+        height: 140px !important;
+        border: 1px solid #888 !important;
+        border-radius: 12px !important;
+        text-align: center !important;
+    }
+    div[data-testid="stNumberInput"] input {
         font-size:30px !important;
         font-weight:700 !important;
         text-align:center !important;
-    }
-    .stNumberInput {
-        width: 140px !important;
-        height: 140px !important;
     }
     </style>
     """,
@@ -105,7 +90,7 @@ with col_agua:
 
     if st.session_state.edit_agua:
         st.number_input(
-            "Editar caudal (m³/h)",
+            "m³/h",
             min_value=0.0,
             max_value=1000.0,
             step=1.0,
@@ -122,7 +107,7 @@ with col_agua:
         ):
             st.session_state.edit_agua = True
 
-# -------- Caudal Químico (vista) ----------
+# -------- Caudal Químico ----------
 with col_quim:
     st.markdown(
         "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico",
