@@ -10,6 +10,9 @@ if "unidad_agua" not in st.session_state:
 if "unidad_quimico" not in st.session_state:
     st.session_state["unidad_quimico"] = "gal/min"
 
+if "show_config" not in st.session_state:
+    st.session_state["show_config"] = False
+
 # --- Logo y título ---
 st.markdown(
     """
@@ -20,6 +23,19 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+# --- Botón Configuración ---
+if st.button("⚙️ Configuración"):
+    st.session_state["show_config"] = not st.session_state["show_config"]
+
+if st.session_state["show_config"]:
+    st.subheader("⚙️ Parámetros de la Bomba")
+    Qmax = st.number_input("Caudal máximo bomba [L/min]", min_value=1.0, value=100.0, step=1.0, key="Qmax")
+    Fmax = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=75.0, step=1.0, key="Fmax")
+else:
+    # Valores por defecto si no se configuró
+    Qmax = 100.0
+    Fmax = 75.0
 
 # --- Sliders principales ---
 bpm = st.slider("Seleccione BPM", 0.5, 20.0, 5.0, 0.1)
@@ -70,15 +86,10 @@ if st.button(valor_q, key="btn_quimico"):
     st.session_state["unidad_quimico"] = unidades[(idx + 1) % len(unidades)]
     st.rerun()
 
-# --- CONFIGURACIÓN BOMBA EN SIDEBAR ---
-st.sidebar.header("⚙️ Configuración Bomba")
-Qmax = st.sidebar.number_input("Caudal máximo bomba [L/min]", min_value=1.0, value=100.0, step=1.0)
-Fmax = st.sidebar.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=75.0, step=1.0)
-
 # --- Cálculo Frecuencia según caudal químico ---
 st.subheader("⚡ Cálculo Frecuencia Variador")
 
-Qset = q_quimico_l_min  # se toma el caudal químico calculado en L/min
+Qset = q_quimico_l_min  # se toma el caudal químico en L/min
 
 if Qset > Qmax:
     st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
