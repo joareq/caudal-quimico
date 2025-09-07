@@ -7,10 +7,9 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 st.markdown(
     """
     <style>
-    .hmi-button {
-        display: inline-block;
+    div[data-testid="stButton"] button {
         background-color: #007BFF;
-        color: white !important;
+        color: white;
         font-size: 28px;
         font-weight: bold;
         border: none;
@@ -23,7 +22,7 @@ st.markdown(
         box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
         transition: all 0.1s ease-in-out;
     }
-    .hmi-button:hover {
+    div[data-testid="stButton"] button:hover {
         background-color: #0056b3;
         transform: scale(1.05);
     }
@@ -43,7 +42,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Inicializar valores en session_state ---
+# --- Inicializar valores ---
 if "gpt" not in st.session_state:
     st.session_state.gpt = 1.5
 if "bpm" not in st.session_state:
@@ -53,35 +52,31 @@ if "bpm" not in st.session_state:
 st.subheader("Control de GPT")
 col1, col2, col3 = st.columns([1, 3, 1])
 with col1:
-    if st.button("➖", key="gpt_down"):
+    if st.button("➖ GPT"):
         st.session_state.gpt = max(0.0, st.session_state.gpt - 0.1)
-    st.markdown('<div class="hmi-button">➖</div>', unsafe_allow_html=True)
 with col2:
     st.session_state.gpt = st.slider(
         "Seleccione GPT (galones por mil)",
         0.0, 10.0, st.session_state.gpt, 0.1, key="gpt_slider"
     )
 with col3:
-    if st.button("➕", key="gpt_up"):
+    if st.button("➕ GPT"):
         st.session_state.gpt = min(10.0, st.session_state.gpt + 0.1)
-    st.markdown('<div class="hmi-button">➕</div>', unsafe_allow_html=True)
 
 # --- Controles BPM ---
 st.subheader("Control de BPM")
 col4, col5, col6 = st.columns([1, 3, 1])
 with col4:
-    if st.button("➖", key="bpm_down"):
+    if st.button("➖ BPM"):
         st.session_state.bpm = max(0.5, st.session_state.bpm - 0.1)
-    st.markdown('<div class="hmi-button">➖</div>', unsafe_allow_html=True)
 with col5:
     st.session_state.bpm = st.slider(
         "Seleccione BPM (barriles por minuto)",
         0.5, 20.0, st.session_state.bpm, 0.1, key="bpm_slider"
     )
 with col6:
-    if st.button("➕", key="bpm_up"):
+    if st.button("➕ BPM"):
         st.session_state.bpm = min(20.0, st.session_state.bpm + 0.1)
-    st.markdown('<div class="hmi-button">➕</div>', unsafe_allow_html=True)
 
 # --- Cálculos ---
 gpt = st.session_state.gpt
@@ -112,4 +107,4 @@ st.markdown("### 🔹 Resultados Químico")
 c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
-c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+c6.metric("Caudal químico [L/h]", f"{q_quimi_
