@@ -1,9 +1,8 @@
 import streamlit as st
 
-# --- Configuración de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
-# --- Logo y título centrados ---
+# --- Logo y título ---
 st.markdown(
     """
     <div style="text-align: center;">
@@ -14,7 +13,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Sliders principales ---
+# --- Sliders ---
 col1, col2 = st.columns(2)
 with col1:
     gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
@@ -30,9 +29,11 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Estado para edición ---
+# --- Estado de edición ---
 if "edit_mode" not in st.session_state:
     st.session_state.edit_mode = False
+if "agua_val" not in st.session_state:
+    st.session_state.agua_val = round(m3_per_h)
 
 # --- CSS ---
 st.markdown("""
@@ -60,41 +61,36 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Resultados ---
+# --- Mostrar resultados ---
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("### 💧 Caudal de Agua")
 
-    # Botón oculto
-    trig = st.button("AGUA_EDIT", key="agua_trigger_btn")
-    st.markdown("""
-    <style>
-    button[kind="secondary"] p:contains("AGUA_EDIT"),
-    button:has(> div p:contains("AGUA_EDIT")) {
-        display:none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    if trig:
-        st.session_state.edit_mode = not st.session_state.edit_mode
-
     if st.session_state.edit_mode:
-        new_val = st.number_input("Editar caudal agua (m³/h)", value=float(m3_per_h), step=1.0)
-        m3_per_h = new_val
+        new_val = st.number_input(
+            "Editar caudal agua (m³/h)",
+            value=float(st.session_state.agua_val),
+            step=1.0,
+            key="agua_input"
+        )
+        if new_val != st.session_state.agua_val:
+            st.session_state.agua_val = int(new_val)
+        if st.button("✅ Confirmar"):
+            st.session_state.edit_mode = False
     else:
         st.markdown(
             f"""
-            <div class="card" onclick="Array.from(window.parent.document.querySelectorAll('button'))
-                .filter(b => b.innerText.trim() === 'AGUA_EDIT')
-                .forEach(b => b.click());">
-              <div class="value">{int(round(m3_per_h))}</div>
+            <div class="card" onclick="window.parent.postMessage({{type: 'streamlit:setComponentValue', key: 'edit_click', value: true}}, '*')">
+              <div class="value">{st.session_state.agua_val}</div>
               <div class="unit">m³/h</div>
             </div>
             """,
             unsafe_allow_html=True
         )
+        if "edit_click" in st.session_state:
+            st.session_state.edit_mode = True
+            del st.session_state["edit_click"]
 
 with col2:
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
