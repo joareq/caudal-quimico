@@ -14,11 +14,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Sliders ---
-col1, col2 = st.columns(2)
-with col1:
+# --- Diseño principal en dos columnas ---
+col_sliders, col_resultados = st.columns([1, 1])
+
+with col_sliders:
     gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
-with col2:
     bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
 
 # --- Cálculos ---
@@ -30,10 +30,8 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Secciones ---
-colA, colB = st.columns(2)
-
-with colA:
+with col_resultados:
+    # --- Caudal de Agua ---
     st.markdown("### 💧 Caudal de Agua")
     st.markdown(
         f"""
@@ -46,7 +44,7 @@ with colA:
         unsafe_allow_html=True
     )
 
-with colB:
+    # --- Caudal Químico ---
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
