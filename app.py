@@ -35,7 +35,7 @@ if "edit_mode" not in st.session_state:
 if "agua_val" not in st.session_state:
     st.session_state.agua_val = round(m3_per_h)
 
-# --- CSS ---
+# --- CSS para tarjetas ---
 st.markdown("""
 <style>
 .card {
@@ -48,7 +48,6 @@ st.markdown("""
     border: 1px solid #888;
     border-radius: 8px;
     text-align: center;
-    cursor: pointer;
 }
 .card .value {
     font-size: 28px;
@@ -69,51 +68,26 @@ with col1:
 
     if st.session_state.edit_mode:
         new_val = st.number_input(
-            "Editar caudal agua (m³/h)",
+            "Modificar caudal agua (m³/h)",
             value=float(st.session_state.agua_val),
             step=1.0,
             key="agua_input"
         )
         if new_val != st.session_state.agua_val:
             st.session_state.agua_val = int(new_val)
-        if st.button("✅ Confirmar"):
+        if st.button("✅ Confirmar edición"):
             st.session_state.edit_mode = False
     else:
-        st.markdown(
-            f"""
-            <div class="card" onclick="window.parent.postMessage({{type: 'streamlit:setComponentValue', key: 'edit_click', value: true}}, '*')">
-              <div class="value">{st.session_state.agua_val}</div>
-              <div class="unit">m³/h</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        if "edit_click" in st.session_state:
+        if st.button(f"**{st.session_state.agua_val}**\n m³/h", key="agua_display"):
             st.session_state.edit_mode = True
-            del st.session_state["edit_click"]
 
 with col2:
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.markdown(f"""
-        <div class="card">
-          <div class="value">{q_quimico_gal_min:.2f}</div>
-          <div class="unit">gal/min</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"<div class='card'><div class='value'>{q_quimico_gal_min:.2f}</div><div class='unit'>gal/min</div></div>", unsafe_allow_html=True)
     with c2:
-        st.markdown(f"""
-        <div class="card">
-          <div class="value">{q_quimico_l_min:.2f}</div>
-          <div class="unit">l/min</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"<div class='card'><div class='value'>{q_quimico_l_min:.2f}</div><div class='unit'>l/min</div></div>", unsafe_allow_html=True)
     with c3:
-        st.markdown(f"""
-        <div class="card">
-          <div class="value">{q_quimico_l_h:.0f}</div>
-          <div class="unit">l/h</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"<div class='card'><div class='value'>{q_quimico_l_h:.0f}</div><div class='unit'>l/h</div></div>", unsafe_allow_html=True)
