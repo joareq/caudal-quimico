@@ -22,7 +22,7 @@ if "gpt" not in st.session_state:
 if "edit_mode" not in st.session_state:
     st.session_state.edit_mode = False
 
-# --- Sliders sincronizados ---
+# --- Sliders ---
 col1, col2 = st.columns(2)
 with col1:
     st.session_state.gpt = st.slider(
@@ -44,10 +44,39 @@ q_quimico_gal_min = (st.session_state.gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
+# --- Estilo CSS para cuadros cuadrados ---
+st.markdown(
+    """
+    <style>
+    .card {
+        width: 120px; 
+        height: 120px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        border: 1px solid #ccc; 
+        border-radius: 8px; 
+        font-weight: bold; 
+        margin: 5px;
+        background-color: transparent;
+    }
+    .value {
+        font-size: 26px;
+    }
+    .unit {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- Layout Resultados ---
 c1, c2 = st.columns(2)
 
-# --- Caudal Agua editable ---
+# --- Caudal Agua (editable) ---
 with c1:
     st.markdown("### 💧 Caudal de Agua")
 
@@ -58,13 +87,20 @@ with c1:
             step=0.1, 
             label_visibility="collapsed"
         )
-        # Si cambia el valor, recalculamos BPM
         if nuevo_valor != m3_per_h and nuevo_valor > 0:
             st.session_state.bpm = (nuevo_valor / 0.06) / 3.785 / 42
             st.session_state.edit_mode = False
             st.rerun()
     else:
-        if st.button(f"{m3_per_h:.2f} m³/h", use_container_width=True):
+        if st.button(
+            f"""
+            <div class="card">
+                <div class="value">{m3_per_h:.0f}</div>
+                <div class="unit">m³/h</div>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        ):
             st.session_state.edit_mode = True
             st.rerun()
 
@@ -77,15 +113,18 @@ with c2:
 
     st.markdown(
         f"""
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-            <div style="flex:1; border:1px solid #ccc; border-radius:6px; padding:10px; text-align:center; font-size:22px; font-weight:bold;">
-                {q_quimico_gal_min:.2f} <br><span style="font-size:14px;">gal/min</span>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div class="card">
+                <div class="value">{q_quimico_gal_min:.2f}</div>
+                <div class="unit">gal/min</div>
             </div>
-            <div style="flex:1; border:1px solid #ccc; border-radius:6px; padding:10px; text-align:center; font-size:22px; font-weight:bold;">
-                {q_quimico_l_min:.2f} <br><span style="font-size:14px;">l/min</span>
+            <div class="card">
+                <div class="value">{q_quimico_l_min:.2f}</div>
+                <div class="unit">l/min</div>
             </div>
-            <div style="flex:1 100%; border:1px solid #ccc; border-radius:6px; padding:10px; text-align:center; font-size:22px; font-weight:bold;">
-                {q_quimico_l_h:.0f} <br><span style="font-size:14px;">l/h</span>
+            <div class="card">
+                <div class="value">{q_quimico_l_h:.0f}</div>
+                <div class="unit">l/h</div>
             </div>
         </div>
         """,
