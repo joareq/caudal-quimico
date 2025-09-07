@@ -3,9 +3,16 @@ import streamlit as st
 # --- Configuración de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
-# --- Logo e título ---
-st.image("logo.png", width=200)   # usa el nombre exacto del archivo en tu repo
-st.title("Cálculo caudal químico")
+# --- Logo y título centrados ---
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/logo.png" width="250">
+        <h1 style="margin-top: 10px;">Cálculo caudal químico</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Inputs con sliders ---
 col1, col2 = st.columns(2)
