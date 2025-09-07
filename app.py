@@ -28,34 +28,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    """
-    <style>
-    /* Track activo (izquierda del handle) */
-    div[data-baseweb="slider"] div[role="slider"] div:nth-child(1) {
-        background: #00AEEF !important;
-    }
-
-    /* Track inactivo (derecha del handle) */
-    div[data-baseweb="slider"] div[role="slider"] div:nth-child(2) {
-        background: #FFFFFF !important;
-    }
-
-    /* Handle (círculo) */
-    div[data-baseweb="slider"] div[role="slider"] div[role="presentation"] {
-        background-color: #00AEEF !important;
-        border: 2px solid #007BFF !important;
-    }
-
-    /* Número encima */
-    .stSlider span[data-baseweb="slider-value-label"] {
-        color: #00AEEF !important;
-        font-weight: bold !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # --- Inputs con sliders ---
 col1, col2 = st.columns(2)
@@ -86,6 +58,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
