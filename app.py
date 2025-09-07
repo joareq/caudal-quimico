@@ -19,18 +19,17 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Número encima del slider (tooltip del handle) */
-    div[data-baseweb="slider"] div[role="tooltip"] {
-        font-size: 24px !important;     /* 👈 ajustá el tamaño */
-        color: #00AEEF !important;      /* azul Hidrofrac */
+    /* Cualquier texto dentro del slider */
+    div[data-baseweb="slider"] span {
+        font-size: 24px !important;   /* 👈 ajustá aquí el tamaño */
+        color: #00AEEF !important;    /* Azul Hidrofrac */
         font-weight: bold !important;
-        background: transparent !important;
-        box-shadow: none !important;    /* sin sombra */
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 
@@ -63,6 +62,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
