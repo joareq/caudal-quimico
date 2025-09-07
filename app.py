@@ -17,29 +17,49 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Línea completa del slider: blanco */
+    /* Chrome / Edge / Safari */
+    input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+    }
     input[type=range]::-webkit-slider-runnable-track {
-        background: #FFFFFF !important;
         height: 6px;
         border-radius: 3px;
+        background: linear-gradient(to right, #00AEEF var(--progress), #FFFFFF var(--progress));
     }
-
-    /* Línea activa (izquierda del handle): azul */
-    input[type=range]::-webkit-slider-runnable-track {
-        background: linear-gradient(to right, #00AEEF var(--sx), #FFFFFF var(--sx)) !important;
-    }
-
-    /* Handle/círculo */
     input[type=range]::-webkit-slider-thumb {
-        background: #00AEEF !important;
-        border: 2px solid #007BFF !important;
-        height: 20px;
-        width: 20px;
+        -webkit-appearance: none;
+        height: 18px;
+        width: 18px;
         border-radius: 50%;
-        margin-top: -7px;
+        background: #00AEEF;
+        border: 2px solid #007BFF;
+        margin-top: -6px;
+        cursor: pointer;
     }
 
-    /* Número encima del handle */
+    /* Firefox */
+    input[type=range]::-moz-range-track {
+        height: 6px;
+        border-radius: 3px;
+        background: white;
+    }
+    input[type=range]::-moz-range-progress {
+        height: 6px;
+        border-radius: 3px;
+        background: #00AEEF;
+    }
+    input[type=range]::-moz-range-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: #00AEEF;
+        border: 2px solid #007BFF;
+        cursor: pointer;
+    }
+
+    /* Número encima */
     .stSlider span[data-baseweb="slider-value-label"] {
         color: #00AEEF !important;
         font-weight: bold !important;
@@ -48,6 +68,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 
@@ -80,6 +101,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
