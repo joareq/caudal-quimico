@@ -17,21 +17,21 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Línea activa (a la izquierda del círculo) */
+    /* Línea activa (hasta el círculo) */
     .stSlider > div[data-baseweb="slider"] > div > div:first-child {
-        background: #00AEEF !important;  /* Azul Hidrofrac */
+        background: #00AEEF !important;   /* azul Hidrofrac */
     }
-    /* Línea inactiva (a la derecha del círculo) */
+    /* Línea inactiva (después del círculo) */
     .stSlider > div[data-baseweb="slider"] > div > div:nth-child(2) {
-        background: #444 !important;  /* gris oscuro neutro */
+        background: #FFFFFF !important;   /* blanco */
     }
-    /* Círculo/handle */
+    /* Círculo */
     .stSlider > div[data-baseweb="slider"] > div > div > div {
         background-color: #00AEEF !important;
         border: 2px solid #007BFF !important;
     }
-    /* Número arriba del slider */
-    .stSlider span[data-baseweb="slider-value-label"] {
+    /* Números (value labels) */
+    .stSlider > div[data-baseweb="slider"] span {
         color: #00AEEF !important;
         font-weight: bold !important;
     }
@@ -39,6 +39,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 
@@ -71,6 +72,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
