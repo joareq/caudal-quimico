@@ -35,17 +35,11 @@ colA, colB = st.columns(2)
 
 with colA:
     st.markdown("### 💧 Caudal de Agua")
-    agua_edit = st.number_input(
-        " ", 
-        value=round(m3_per_h, 2),
-        step=1.0,
-        key="agua_input",
-        label_visibility="collapsed"
-    )
     st.markdown(
         f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px; width:120px; margin:auto;">
-            <div style="font-size:28px; font-weight:bold;">{agua_edit:.0f}</div>
+        <div style="text-align:center; border:1px solid #555; border-radius:8px;
+                    padding:20px; width:120px; margin:auto;">
+            <div style="font-size:28px; font-weight:bold;">{m3_per_h:.0f}</div>
             <div style="font-size:14px;">m³/h</div>
         </div>
         """,
@@ -53,11 +47,13 @@ with colA:
     )
 
 with colB:
-    st.markdown("### 🏭 Caudal Químico")
+    st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
+
     c1, c2, c3 = st.columns(3)
     c1.markdown(
         f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px;">
+        <div style="text-align:center; border:1px solid #555; border-radius:8px;
+                    padding:20px;">
             <div style="font-size:28px; font-weight:bold;">{q_quimico_gal_min:.2f}</div>
             <div style="font-size:14px;">gal/min</div>
         </div>
@@ -66,7 +62,8 @@ with colB:
     )
     c2.markdown(
         f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px;">
+        <div style="text-align:center; border:1px solid #555; border-radius:8px;
+                    padding:20px;">
             <div style="font-size:28px; font-weight:bold;">{q_quimico_l_min:.2f}</div>
             <div style="font-size:14px;">l/min</div>
         </div>
@@ -75,7 +72,8 @@ with colB:
     )
     c3.markdown(
         f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px;">
+        <div style="text-align:center; border:1px solid #555; border-radius:8px;
+                    padding:20px;">
             <div style="font-size:28px; font-weight:bold;">{q_quimico_l_h:.0f}</div>
             <div style="font-size:14px;">l/h</div>
         </div>
