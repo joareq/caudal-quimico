@@ -17,19 +17,28 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Barra activa (de la izquierda al círculo) */
-    .stSlider > div[data-baseweb="slider"] > div > div:nth-child(1) {
-        background: #00AEEF !important;  /* Azul Hidrofrac */
+    /* Línea completa del slider: blanco */
+    input[type=range]::-webkit-slider-runnable-track {
+        background: #FFFFFF !important;
+        height: 6px;
+        border-radius: 3px;
     }
-    /* Barra inactiva (del círculo a la derecha) */
-    .stSlider > div[data-baseweb="slider"] > div > div:nth-child(3) {
-        background: #FFFFFF !important;  /* Blanco */
+
+    /* Línea activa (izquierda del handle): azul */
+    input[type=range]::-webkit-slider-runnable-track {
+        background: linear-gradient(to right, #00AEEF var(--sx), #FFFFFF var(--sx)) !important;
     }
-    /* Handle del slider */
-    .stSlider > div[data-baseweb="slider"] > div > div > div {
-        background-color: #00AEEF !important;
+
+    /* Handle/círculo */
+    input[type=range]::-webkit-slider-thumb {
+        background: #00AEEF !important;
         border: 2px solid #007BFF !important;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        margin-top: -7px;
     }
+
     /* Número encima del handle */
     .stSlider span[data-baseweb="slider-value-label"] {
         color: #00AEEF !important;
@@ -39,6 +48,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 # --- Inputs con sliders ---
@@ -70,6 +80,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
