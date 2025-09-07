@@ -13,6 +13,12 @@ if "unidad_quimico" not in st.session_state:
 if "show_config" not in st.session_state:
     st.session_state["show_config"] = False
 
+if "Qmax" not in st.session_state:
+    st.session_state["Qmax"] = 80.0  # L/h por defecto
+
+if "Fmax" not in st.session_state:
+    st.session_state["Fmax"] = 50.0  # Hz por defecto
+
 # --- Logo y título ---
 st.markdown(
     """
@@ -35,7 +41,7 @@ m3_per_h = l_per_min * 0.06
 
 q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
-q_quimico_l_h = q_quimico_l_min * 60  # <<< lo usamos en los cálculos con Qmax
+q_quimico_l_h = q_quimico_l_min * 60  # <<< base de comparación con Qmax
 
 # --- Caudal Agua ---
 st.subheader("💧 Caudal Agua")
@@ -73,25 +79,22 @@ if st.button(valor_q, key="btn_quimico"):
     st.session_state["unidad_quimico"] = unidades[(idx + 1) % len(unidades)]
     st.rerun()
 
-# --- Cálculo Frecuencia según caudal químico ---
-st.subheader("⚡ Cálculo Frecuencia Variador")
+# --- Cálculo Bomba ---
+st.subheader("⚡ Cálculo Bomba")
 
-# Valores por defecto
-Qmax = 80.0   # [L/h]
-Fmax = 50.0   # [Hz]
-
-Qset = q_quimico_l_h  # usamos L/h para comparar contra Qmax
+Qset = q_quimico_l_h  # usamos L/h
+Qmax = st.session_state["Qmax"]
+Fmax = st.session_state["Fmax"]
 
 if Qset > Qmax:
     st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
 else:
     vel = (Qset / Qmax) * 100
-    fset = (Qset / Qmax) * Fmax
+    fset = (Qset / Qmax) * Fmax  # solo se mostrará si está en modo configuración
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric("Velocidad [%]", f"{vel:.1f}")
-    with col2:
+    st.metric("Velocidad [%]", f"{vel:.1f}")
+
+    if st.session_state["show_config"]:
         st.metric("Frecuencia [Hz]", f"{fset:.2f}")
 
 # --- CONFIGURACIÓN AL FINAL ---
@@ -101,18 +104,5 @@ if st.button("⚙️ Configuración"):
 
 if st.session_state["show_config"]:
     st.subheader("⚙️ Parámetros de la Bomba")
-    Qmax = st.number_input("Caudal máximo bomba [L/h]", min_value=1.0, value=80.0, step=1.0, key="Qmax")
-    Fmax = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=50.0, step=1.0, key="Fmax")
-
-    # recalcular con valores configurados
-    if Qset > Qmax:
-        st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
-    else:
-        vel = (Qset / Qmax) * 100
-        fset = (Qset / Qmax) * Fmax
-
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("Velocidad [%]", f"{vel:.1f}")
-        with col2:
-            st.metric("Frecuencia [Hz]", f"{fset:.2f}")
+    st.session_state["Qmax"] = st.number_input("Caudal máximo bomba [L/h]", min_value=1.0, value=st.session_state["Qmax"], step=1.0)
+    st.session_state["Fmax"] = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=st.session_state["Fmax"], step=1.0)
