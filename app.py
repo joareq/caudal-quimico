@@ -21,7 +21,7 @@ st.markdown(
     <style>
     /* Número encima del slider (popover de BaseWeb) */
     div[data-baseweb="slider"] div[data-baseweb="popover"] {
-        font-size: 22px !important;   /* 👈 ajustá el tamaño */
+        font-size: 202px !important;   /* 👈 ajustá el tamaño */
         color: #00AEEF !important;    /* azul Hidrofrac */
         font-weight: bold !important;
         background: transparent !important; /* sin fondo */
@@ -61,6 +61,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
