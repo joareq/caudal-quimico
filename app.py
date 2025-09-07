@@ -106,16 +106,16 @@ with col_agua:
             on_change=sync_from_agua,
             label_visibility="collapsed",
         )
-        # vuelve a modo no editable después de confirmar
+        # volver a modo tarjeta después de editar
         st.session_state.edit_agua = False
     else:
-        if st.button(
-            f"<div class='card'><div class='value'>{int(round(st.session_state.agua_m3h))}</div><div class='unit'>m³/h</div></div>",
-            key="btn_agua",
-            help="Click para editar",
-            use_container_width=False,
-        ):
+        # usamos markdown con botón invisible
+        if st.button("Editar Agua", key="edit_btn", help="Click para editar"):
             st.session_state.edit_agua = True
+        st.markdown(
+            f"<div class='card'><div class='value'>{int(round(st.session_state.agua_m3h))}</div><div class='unit'>m³/h</div></div>",
+            unsafe_allow_html=True,
+        )
 
 # -------- Caudal Químico ----------
 with col_quim:
