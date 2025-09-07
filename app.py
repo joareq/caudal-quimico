@@ -52,7 +52,7 @@ if st.button(valor_agua, key="btn_agua"):
 
 # --- Caudal Químico ---
 st.markdown(
-    "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico",
+    "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='38'> Caudal Químico",
     unsafe_allow_html=True
 )
 
