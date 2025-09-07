@@ -18,6 +18,14 @@ st.markdown(
         background-color: #00AEEF !important;
         border: 2px solid white !important;
     }
+    /* Caja resultados */
+    .box {
+        border: 1px solid white;
+        padding: 10px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 10px;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -34,7 +42,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Sliders (uno debajo del otro) ---
+# --- Sliders ---
 gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
 
@@ -51,29 +59,24 @@ q_quimico_l_h = q_quimico_l_min * 60
 col1, col2 = st.columns(2)
 
 with col1:
+    st.markdown("### 💧 Caudal de Agua")
     st.markdown(
-        f"""
-        <div style="display: flex; align-items: center; gap: 10px; margin-top:20px;">
-            <span style="font-size: 28px;">💧</span>
-            <h3 style="margin: 0;">Caudal de Agua</h3>
-        </div>
-        <h2 style="margin: 0; color: white;">{m3_per_h:.2f} m³/h</h2>
-        """,
+        f"<div class='box'><h2 style='margin:0;'>{m3_per_h:.0f} m³/h</h2></div>",
         unsafe_allow_html=True
     )
 
 with col2:
     st.markdown("### Caudal Químico")
-    st.write(f"**{q_quimico_gal_min:.2f} gal/min**")
-    st.write(f"**{q_quimico_l_min:.2f} l/min**")
-    st.write(f"**{q_quimico_l_h:.0f} l/h**")
-
-# --- Imagen decorativa al final ---
-st.markdown(
-    """
-    <div style="text-align: center; margin-top: 20px;">
-        <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png" width="120">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+    st.markdown(
+        f"""
+        <div class='box'>
+            <p><b>{q_quimico_gal_min:.2f}</b> gal/min</p>
+            <p><b>{q_quimico_l_min:.2f}</b> l/min</p>
+            <p><b>{q_quimico_l_h:.0f}</b> l/h</p>
+            <div style="text-align:center; margin-top:10px;">
+                <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png" width="70">
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
