@@ -36,19 +36,11 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Funciones de cambio de unidad ---
-def cambiar_unidad_agua():
-    st.session_state["unidad_agua"] = "BPM" if st.session_state["unidad_agua"] == "m³/h" else "m³/h"
-
-def cambiar_unidad_quimico():
-    unidades = ["gal/min", "L/min", "L/h"]
-    idx = unidades.index(st.session_state["unidad_quimico"])
-    st.session_state["unidad_quimico"] = unidades[(idx + 1) % len(unidades)]
-
-# --- Estilos de cards ---
-def render_card(valor, unidad):
+# --- Estilo de los cuadros ---
+def render_card(valor, unidad, key):
     return f"""
-    <div style="border:1px solid #555; border-radius:8px;
+    <div onclick="fetch('/_stcore/{key}', {{method: 'POST'}})"
+         style="cursor:pointer; border:1px solid #555; border-radius:8px;
                 padding:20px; width:140px; height:140px;
                 display:flex; flex-direction:column;
                 align-items:center; justify-content:center;
@@ -57,6 +49,15 @@ def render_card(valor, unidad):
         <div style="font-size:14px; color:gray;">{unidad}</div>
     </div>
     """
+
+# --- Funciones de cambio de unidad ---
+def cambiar_unidad_agua():
+    st.session_state["unidad_agua"] = "BPM" if st.session_state["unidad_agua"] == "m³/h" else "m³/h"
+
+def cambiar_unidad_quimico():
+    unidades = ["gal/min", "L/min", "L/h"]
+    idx = unidades.index(st.session_state["unidad_quimico"])
+    st.session_state["unidad_quimico"] = unidades[(idx + 1) % len(unidades)]
 
 # --- Resultados ---
 with col_resultados:
@@ -68,9 +69,9 @@ with col_resultados:
     else:
         valor_agua = f"{bpm:.2f}"
 
-    if st.button(" ", key="agua_btn"):  # botón invisible
+    if st.button("agua", key="agua_btn", label_visibility="collapsed"):
         cambiar_unidad_agua()
-    st.markdown(render_card(valor_agua, st.session_state["unidad_agua"]), unsafe_allow_html=True)
+    st.markdown(render_card(valor_agua, st.session_state["unidad_agua"], "agua_btn"), unsafe_allow_html=True)
 
     # --- Caudal Químico ---
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
@@ -82,6 +83,6 @@ with col_resultados:
     else:
         valor_q = f"{q_quimico_l_h:.0f}"
 
-    if st.button(" ", key="quimico_btn"):  # botón invisible
+    if st.button("quimico", key="quimico_btn", label_visibility="collapsed"):
         cambiar_unidad_quimico()
-    st.markdown(render_card(valor_q, st.session_state["unidad_quimico"]), unsafe_allow_html=True)
+    st.markdown(render_card(valor_q, st.session_state["unidad_quimico"], "quimico_btn"), unsafe_allow_html=True)
