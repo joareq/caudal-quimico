@@ -14,15 +14,16 @@ st.markdown("""
 }
 .card .value { font-size:28px; }
 .card .unit  { font-size:14px; margin-top:6px; }
+.card input {
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  width:90%;
+  border:none;
+  background:transparent;
+  color:white;
+}
 </style>
-""", unsafe_allow_html=True)
-
-# --- Logo y título ---
-st.markdown("""
-<div style="text-align:center;">
-  <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/logo.png" width="250">
-  <h1 style="margin-top:10px;">CALCULO CAUDAL QUIMICO</h1>
-</div>
 """, unsafe_allow_html=True)
 
 # --- Estado inicial ---
@@ -54,21 +55,35 @@ with col1:
     st.markdown("### 💧 Caudal de Agua")
 
     if st.session_state.edit_agua:
-        # Cuadro editable dentro del card
-        nuevo = st.number_input("", value=round(m3_per_h, 2), step=0.1, label_visibility="collapsed")
-        cc1, cc2 = st.columns([1,1])
-        with cc1:
-            if st.button("✔ Guardar", use_container_width=True):
+        nuevo = st.text_input(
+            " ", value=str(int(round(m3_per_h))),
+            label_visibility="collapsed", key="agua_input"
+        )
+
+        st.markdown(
+            f"""
+            <div class="card">
+                <input type="number" value="{nuevo}" id="agua_val">
+                <div class="unit">m³/h</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if st.button("✔ Guardar"):
+            try:
+                val = float(st.session_state.agua_input)
                 denom = 42*3.785*0.06
-                st.session_state.bpm = max(0.5, min(20.0, float(nuevo)/denom))
-                st.session_state.edit_agua = False
-                st.rerun()
-        with cc2:
-            if st.button("✖ Cancelar", use_container_width=True):
-                st.session_state.edit_agua = False
-                st.rerun()
+                st.session_state.bpm = max(0.5, min(20.0, val/denom))
+            except:
+                pass
+            st.session_state.edit_agua = False
+            st.rerun()
+        if st.button("✖ Cancelar"):
+            st.session_state.edit_agua = False
+            st.rerun()
+
     else:
-        # Mostrar valor en tarjeta clickeable
         if st.button("", key="agua_card", help="Haz clic para editar"):
             st.session_state.edit_agua = True
             st.rerun()
