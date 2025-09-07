@@ -16,21 +16,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    """
-    <style>
-    /* Cualquier texto dentro del slider */
-    div[data-baseweb="slider"] span {
-        font-size: 24px !important;   /* 👈 ajustá aquí el tamaño */
-        color: #00AEEF !important;    /* Azul Hidrofrac */
-        font-weight: bold !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
 
 
 # --- Inputs con sliders ---
@@ -49,12 +34,17 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Resultados Agua ---
-st.markdown("### 💧 Caudal Agua")
-c1, c2, c3 = st.columns(3)
-# c1.metric("Caudal agua [gal/min]", f"{gal_per_min:.2f}")
-# c2.metric("Caudal agua [L/min]", f"{l_per_min:.2f}")
-c3.metric("Caudal agua [m³/h]", f"{m3_per_h:.2f}")
+st.markdown(
+    f"""
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 28px;">💧</span>
+        <h3 style="margin: 0;">Caudal de Agua</h3>
+        <h2 style="margin: 0; padding-left: 15px; color: white;">{m3_per_h:.2f} m³/h</h2>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 # --- Resultados Químico ---
 st.markdown("### 🔹 Resultados Químico")
@@ -62,6 +52,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
