@@ -1,141 +1,84 @@
 import streamlit as st
 
-# =====================
-# Configuración general
-# =====================
+# --- Configuración de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
-# Constantes
-GAL_TO_L = 3.785411784
-FACTOR_M3H_POR_BPM = 42 * GAL_TO_L * 0.06  # ≈ 9.5382 m³/h por BPM
-
-# ===================
-# Estado inicial
-# ===================
-if "bpm" not in st.session_state:
-    st.session_state.bpm = 5.0
-if "agua_m3h" not in st.session_state:
-    st.session_state.agua_m3h = round(st.session_state.bpm * FACTOR_M3H_POR_BPM, 2)
-if "edit_agua" not in st.session_state:
-    st.session_state.edit_agua = False
-
-def sync_from_bpm():
-    st.session_state.agua_m3h = round(st.session_state.bpm * FACTOR_M3H_POR_BPM, 2)
-
-def sync_from_agua():
-    st.session_state.bpm = round(st.session_state.agua_m3h / FACTOR_M3H_POR_BPM, 2)
-
-# =========
-# Sliders
-# =========
-csl1, csl2 = st.columns(2)
-with csl1:
-    st.session_state.gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
-with csl2:
-    st.slider(
-        "Seleccione BPM (barriles por minuto)",
-        0.5,
-        20.0,
-        key="bpm",
-        on_change=sync_from_bpm,
-    )
-
-# ===================
-# Cálculos
-# ===================
-gal_per_min = st.session_state.bpm * 42
-q_quimico_gal_min = (st.session_state.gpt / 1000.0) * gal_per_min
-q_quimico_l_min = q_quimico_gal_min * GAL_TO_L
-q_quimico_l_h = q_quimico_l_min * 60
-
-# =========
-# Estilos
-# =========
+# --- Logo y título centrados ---
 st.markdown(
     """
-    <style>
-    .card {
-        display:flex; flex-direction:column; justify-content:center; align-items:center;
-        width: 140px; height: 140px;
-        border:1px solid #888; border-radius:12px; text-align:center;
-        background: transparent;
-    }
-    .card .value { font-size:30px; font-weight:700; line-height:1; }
-    .card .unit  { font-size:14px; color:#cfcfcf; margin-top:6px; }
-
-    /* Forzar tamaño del number_input */
-    div[data-testid="stNumberInput"] {
-        width: 140px !important;
-        height: 140px !important;
-        border: 1px solid #888 !important;
-        border-radius: 12px !important;
-        text-align: center !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    div[data-testid="stNumberInput"] input {
-        font-size:30px !important;
-        font-weight:700 !important;
-        text-align:center !important;
-        height: 100% !important;
-        width: 100% !important;
-    }
-    </style>
+    <div style="text-align: center;">
+        <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/logo.png" width="250">
+        <h1 style="margin-top: 10px;">CALCULO CAUDAL QUIMICO</h1>
+    </div>
     """,
-    unsafe_allow_html=True,
+    unsafe_allow_html=True
 )
 
-# ===================
-# Layout de resultados
-# ===================
-col_agua, col_quim = st.columns(2)
+# --- Sliders ---
+col1, col2 = st.columns(2)
+with col1:
+    gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
+with col2:
+    bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
 
-# -------- Caudal de Agua (editable) ----------
-with col_agua:
+# --- Cálculos ---
+gal_per_min = bpm * 42
+l_per_min = gal_per_min * 3.785
+m3_per_h = l_per_min * 0.06
+
+q_quimico_gal_min = (gpt / 1000) * gal_per_min
+q_quimico_l_min = q_quimico_gal_min * 3.785
+q_quimico_l_h = q_quimico_l_min * 60
+
+# --- Secciones ---
+colA, colB = st.columns(2)
+
+with colA:
     st.markdown("### 💧 Caudal de Agua")
-
-    if st.session_state.edit_agua:
-        st.number_input(
-            "m³/h",
-            min_value=0.0,
-            max_value=1000.0,
-            step=1.0,
-            value=float(st.session_state.agua_m3h),
-            key="agua_m3h",
-            on_change=sync_from_agua,
-            label_visibility="collapsed",
-        )
-        # volver a modo tarjeta después de editar
-        st.session_state.edit_agua = False
-    else:
-        # usamos markdown con botón invisible
-        if st.button("Editar Agua", key="edit_btn", help="Click para editar"):
-            st.session_state.edit_agua = True
-        st.markdown(
-            f"<div class='card'><div class='value'>{int(round(st.session_state.agua_m3h))}</div><div class='unit'>m³/h</div></div>",
-            unsafe_allow_html=True,
-        )
-
-# -------- Caudal Químico ----------
-with col_quim:
-    st.markdown(
-        "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico",
-        unsafe_allow_html=True,
+    agua_edit = st.number_input(
+        " ", 
+        value=round(m3_per_h, 2),
+        step=1.0,
+        key="agua_input",
+        label_visibility="collapsed"
     )
+    st.markdown(
+        f"""
+        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px; width:120px; margin:auto;">
+            <div style="font-size:28px; font-weight:bold;">{agua_edit:.0f}</div>
+            <div style="font-size:14px;">m³/h</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with colB:
+    st.markdown("### 🏭 Caudal Químico")
     c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown(
-            f"<div class='card'><div class='value'>{q_quimico_gal_min:.2f}</div><div class='unit'>gal/min</div></div>",
-            unsafe_allow_html=True,
-        )
-    with c2:
-        st.markdown(
-            f"<div class='card'><div class='value'>{q_quimico_l_min:.2f}</div><div class='unit'>l/min</div></div>",
-            unsafe_allow_html=True,
-        )
-    with c3:
-        st.markdown(
-            f"<div class='card'><div class='value'>{q_quimico_l_h:.0f}</div><div class='unit'>l/h</div></div>",
-            unsafe_allow_html=True,
-        )
+    c1.markdown(
+        f"""
+        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px;">
+            <div style="font-size:28px; font-weight:bold;">{q_quimico_gal_min:.2f}</div>
+            <div style="font-size:14px;">gal/min</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    c2.markdown(
+        f"""
+        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px;">
+            <div style="font-size:28px; font-weight:bold;">{q_quimico_l_min:.2f}</div>
+            <div style="font-size:14px;">l/min</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    c3.markdown(
+        f"""
+        <div style="text-align:center; border:1px solid #555; border-radius:8px; padding:20px;">
+            <div style="font-size:28px; font-weight:bold;">{q_quimico_l_h:.0f}</div>
+            <div style="font-size:14px;">l/h</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
