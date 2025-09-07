@@ -90,7 +90,6 @@ Fmax = st.session_state["Fmax"]
 
 # Calcular Qmax en función de la frecuencia forzada
 Qmax = Qnom * (Fmax / Fnom)
-
 Qset = q_quimico_l_h
 
 if Qset > Qmax:
@@ -98,11 +97,6 @@ if Qset > Qmax:
 else:
     vel = (Qset / Qmax) * 100
     st.metric("Velocidad [%]", f"{vel:.1f}")
-
-    # Solo mostrar frecuencia si está en configuración
-    if st.session_state["show_config"]:
-        fset = (Qset / Qmax) * Fmax
-        st.metric("Frecuencia [Hz]", f"{fset:.2f}")
 
 # --- CONFIGURACIÓN AL FINAL ---
 st.markdown("---")
@@ -129,3 +123,12 @@ if st.session_state["show_config"]:
         value=st.session_state["Fmax"],
         step=1.0
     )
+
+    # Recalcular Qmax y frecuencia actual
+    Qmax = st.session_state["Qnom"] * (st.session_state["Fmax"] / st.session_state["Fnom"])
+    if Qset <= Qmax:
+        fset = (Qset / Qmax) * st.session_state["Fmax"]
+
+        # Mostrar resultados adicionales SOLO dentro de la config
+        st.metric("Frecuencia [Hz]", f"{fset:.2f}")
+        st.metric("Caudal máximo forzado [L/h]", f"{Qmax:.1f}")
