@@ -14,6 +14,24 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# --- Estilo personalizado para sliders (azul) ---
+st.markdown(
+    """
+    <style>
+    /* Cambiar color de la barra del slider */
+    .stSlider > div[data-baseweb="slider"] > div {
+        background: linear-gradient(to right, #007BFF, #00AEEF) !important;
+    }
+    /* Cambiar color del handle (círculo) */
+    .stSlider > div[data-baseweb="slider"] > div > div {
+        background-color: #007BFF !important;
+        border: 2px solid #0056b3 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- Inputs con sliders ---
 col1, col2 = st.columns(2)
 with col1:
@@ -43,4 +61,5 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
