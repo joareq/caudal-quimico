@@ -3,6 +3,10 @@ import streamlit as st
 # --- Configuración de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
+# --- Inicializar estado de unidad ---
+if "unidad_agua" not in st.session_state:
+    st.session_state.unidad_agua = "m³/h"
+
 # --- Logo y título centrados ---
 st.markdown(
     """
@@ -30,51 +34,29 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
+# --- Convertir caudal de agua si está en barriles ---
+if st.session_state.unidad_agua == "m³/h":
+    valor_agua = m3_per_h
+    unidad = "m³/h"
+else:
+    valor_agua = bpm
+    unidad = "BPM"
+
 with col_resultados:
     # --- Caudal de Agua ---
     st.markdown("### 💧 Caudal de Agua")
-    st.markdown(
-        f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px;
-                    padding:20px; width:120px; margin:auto;">
-            <div style="font-size:28px; font-weight:bold;">{m3_per_h:.0f}</div>
-            <div style="font-size:14px;">m³/h</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    if st.button(f"{valor_agua:.0f} {unidad}", key="toggle_agua"):
+        # Cambiar unidad al pulsar
+        if st.session_state.unidad_agua == "m³/h":
+            st.session_state.unidad_agua = "BPM"
+        else:
+            st.session_state.unidad_agua = "m³/h"
+        st.experimental_rerun()
 
     # --- Caudal Químico ---
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
-    c1.markdown(
-        f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px;
-                    padding:20px;">
-            <div style="font-size:28px; font-weight:bold;">{q_quimico_gal_min:.2f}</div>
-            <div style="font-size:14px;">gal/min</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    c2.markdown(
-        f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px;
-                    padding:20px;">
-            <div style="font-size:28px; font-weight:bold;">{q_quimico_l_min:.2f}</div>
-            <div style="font-size:14px;">l/min</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    c3.markdown(
-        f"""
-        <div style="text-align:center; border:1px solid #555; border-radius:8px;
-                    padding:20px;">
-            <div style="font-size:28px; font-weight:bold;">{q_quimico_l_h:.0f}</div>
-            <div style="font-size:14px;">l/h</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    c1.metric("gal/min", f"{q_quimico_gal_min:.2f}")
+    c2.metric("l/min", f"{q_quimico_l_min:.2f}")
+    c3.metric("l/h", f"{q_quimico_l_h:.0f}")
