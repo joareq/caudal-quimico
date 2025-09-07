@@ -3,26 +3,25 @@ import streamlit as st
 # --- Config de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
-# --- CSS: cards cuadradas y botón-cuadrado clickeable ---
+# --- CSS: estilo de los cuadrados ---
 st.markdown("""
 <style>
-/* Cuadrados de resultados (químico) */
 .card {
   width: 120px; height: 120px;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   border:1px solid #ccc; border-radius:8px;
   font-weight:bold; margin:6px; background:transparent;
 }
-.card .value { font-size:26px; }
+.card .value { font-size:28px; }
 .card .unit  { font-size:14px; margin-top:6px; }
 
-/* Botón cuadrado para Caudal de Agua */
+/* Botón cuadrado para Caudal Agua */
 .square-btn > div.stButton > button {
   width: 120px; height: 120px;
   border:1px solid #ccc; border-radius:8px;
   background:transparent; color:#fff; font-weight:bold;
-  font-size:26px; line-height:1.1; white-space:pre-line;
-  display:flex; align-items:center; justify-content:center;
+  font-size:28px; line-height:1.1; white-space:pre-line;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
   padding:0;
 }
 </style>
@@ -48,7 +47,7 @@ with csl1:
 with csl2:
     st.session_state.bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, st.session_state.bpm, 0.1)
 
-# --- Cálculos base (desde BPM y GPT) ---
+# --- Cálculos ---
 gal_per_min = st.session_state.bpm * 42
 l_per_min   = gal_per_min * 3.785
 m3_per_h    = l_per_min * 0.06
@@ -60,7 +59,7 @@ q_quimico_l_h     = q_quimico_l_min * 60
 # --- Layout resultados ---
 col1, col2 = st.columns(2)
 
-# ============ Caudal de Agua (cuadrado editable con click) ============
+# ============ Caudal de Agua ============
 with col1:
     st.markdown("### 💧 Caudal de Agua")
 
@@ -69,7 +68,6 @@ with col1:
         cc1, cc2 = st.columns([1,1])
         with cc1:
             if st.button("Guardar"):
-                # m3/h = BPM * 42 * 3.785 * 0.06  =>  BPM = m3/h / (42*3.785*0.06)
                 denom = 42*3.785*0.06
                 st.session_state.bpm = max(0.5, min(20.0, float(nuevo)/denom))
                 st.session_state.edit_agua = False
@@ -79,14 +77,14 @@ with col1:
                 st.session_state.edit_agua = False
                 st.rerun()
     else:
-        # Botón cuadrado con valor (dos líneas) -> al click habilita edición
+        # Botón cuadrado igual que los de químico
         st.markdown('<div class="square-btn">', unsafe_allow_html=True)
         if st.button(f"{int(round(m3_per_h))}\n m³/h", key="btn_agua"):
             st.session_state.edit_agua = True
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ============ Caudal Químico (tres cuadrados + icono) ============
+# ============ Caudal Químico ============
 with col2:
     st.markdown(
         "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='30'> Caudal Químico",
