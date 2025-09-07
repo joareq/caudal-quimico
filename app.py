@@ -121,4 +121,5 @@ st.markdown(
 st.markdown("### 🔹 Resultados Químico")
 c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
-c5.metric("Caudal quí
+c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
+c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
