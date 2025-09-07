@@ -51,10 +51,13 @@ with col_resultados:
             st.session_state.unidad_agua = "BPM"
         else:
             st.session_state.unidad_agua = "m³/h"
-        st.experimental_rerun()
+        st.rerun()   # ✅ ahora funciona con la versión nueva
 
     # --- Caudal Químico ---
-    st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
+    st.markdown(
+        "### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico",
+        unsafe_allow_html=True
+    )
 
     c1, c2, c3 = st.columns(3)
     c1.metric("gal/min", f"{q_quimico_gal_min:.2f}")
