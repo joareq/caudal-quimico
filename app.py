@@ -68,11 +68,9 @@ with col_resultados:
     else:
         valor_agua = f"{bpm:.2f}"
 
-    c1, _ = st.columns([1, 3])
-    with c1:
-        if st.button("agua", key="agua_btn"):
-            cambiar_unidad_agua()
-        st.markdown(render_card(valor_agua, st.session_state["unidad_agua"]), unsafe_allow_html=True)
+    if st.button(" ", key="agua_btn"):  # botón invisible
+        cambiar_unidad_agua()
+    st.markdown(render_card(valor_agua, st.session_state["unidad_agua"]), unsafe_allow_html=True)
 
     # --- Caudal Químico ---
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
@@ -84,8 +82,6 @@ with col_resultados:
     else:
         valor_q = f"{q_quimico_l_h:.0f}"
 
-    c2, _ = st.columns([1, 3])
-    with c2:
-        if st.button("quimico", key="quimico_btn"):
-            cambiar_unidad_quimico()
-        st.markdown(render_card(valor_q, st.session_state["unidad_quimico"]), unsafe_allow_html=True)
+    if st.button(" ", key="quimico_btn"):  # botón invisible
+        cambiar_unidad_quimico()
+    st.markdown(render_card(valor_q, st.session_state["unidad_quimico"]), unsafe_allow_html=True)
