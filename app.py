@@ -14,10 +14,10 @@ if "show_config" not in st.session_state:
     st.session_state["show_config"] = False
 
 if "Qmax" not in st.session_state:
-    st.session_state["Qmax"] = 80.0  # L/h por defecto
+    st.session_state["Qmax"] = 80.0  # [L/h] por defecto
 
 if "Fmax" not in st.session_state:
-    st.session_state["Fmax"] = 50.0  # Hz por defecto
+    st.session_state["Fmax"] = 50.0  # [Hz] por defecto
 
 # --- Logo y título ---
 st.markdown(
@@ -41,7 +41,7 @@ m3_per_h = l_per_min * 0.06
 
 q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
-q_quimico_l_h = q_quimico_l_min * 60  # <<< base de comparación con Qmax
+q_quimico_l_h = q_quimico_l_min * 60  # <<< usamos en cálculos de bomba
 
 # --- Caudal Agua ---
 st.subheader("💧 Caudal Agua")
@@ -52,7 +52,6 @@ else:
     valor_agua = f"{bpm:.2f} BPM"
 
 if st.button(valor_agua, key="btn_agua"):
-    # Toggle de unidad
     if st.session_state["unidad_agua"] == "m³/h":
         st.session_state["unidad_agua"] = "BPM"
     else:
@@ -73,7 +72,6 @@ else:
     valor_q = f"{q_quimico_l_h:.0f} L/h"
 
 if st.button(valor_q, key="btn_quimico"):
-    # Rotar unidades
     unidades = ["gal/min", "L/min", "L/h"]
     idx = unidades.index(st.session_state["unidad_quimico"])
     st.session_state["unidad_quimico"] = unidades[(idx + 1) % len(unidades)]
@@ -82,7 +80,7 @@ if st.button(valor_q, key="btn_quimico"):
 # --- Cálculo Bomba ---
 st.subheader("⚡ Cálculo Bomba")
 
-Qset = q_quimico_l_h  # usamos L/h
+Qset = q_quimico_l_h
 Qmax = st.session_state["Qmax"]
 Fmax = st.session_state["Fmax"]
 
@@ -90,19 +88,31 @@ if Qset > Qmax:
     st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
 else:
     vel = (Qset / Qmax) * 100
-    fset = (Qset / Qmax) * Fmax  # solo se mostrará si está en modo configuración
+    fset = (Qset / Qmax) * Fmax
 
     st.metric("Velocidad [%]", f"{vel:.1f}")
 
-    if st.session_state["show_config"]:
-        st.metric("Frecuencia [Hz]", f"{fset:.2f}")
-
 # --- CONFIGURACIÓN AL FINAL ---
-st.markdown("---")  # separador visual
+st.markdown("---")
 if st.button("⚙️ Configuración"):
     st.session_state["show_config"] = not st.session_state["show_config"]
 
 if st.session_state["show_config"]:
     st.subheader("⚙️ Parámetros de la Bomba")
-    st.session_state["Qmax"] = st.number_input("Caudal máximo bomba [L/h]", min_value=1.0, value=st.session_state["Qmax"], step=1.0)
-    st.session_state["Fmax"] = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=st.session_state["Fmax"], step=1.0)
+    st.session_state["Qmax"] = st.number_input(
+        "Caudal máximo bomba [L/h]",
+        min_value=1.0,
+        value=st.session_state["Qmax"],
+        step=1.0
+    )
+    st.session_state["Fmax"] = st.number_input(
+        "Frecuencia máxima variador [Hz]",
+        min_value=1.0,
+        value=st.session_state["Fmax"],
+        step=1.0
+    )
+
+    # Mostrar frecuencia solo mientras está abierta la configuración
+    if Qset <= st.session_state["Qmax"]:
+        fset = (Qset / st.session_state["Qmax"]) * st.session_state["Fmax"]
+        st.metric("Frecuencia [Hz]", f"{fset:.2f}")
