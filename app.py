@@ -13,36 +13,31 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Inicializar estado ---
+# --- Estado inicial ---
 if "agua_val" not in st.session_state:
-    st.session_state.agua_val = 48  # valor inicial m³/h
-if "edit_mode" not in st.session_state:
-    st.session_state.edit_mode = False
+    st.session_state.agua_val = 48  # valor inicial en m³/h
 
-# --- Sincronizar slider con valor agua ---
-# agua_val (m³/h) → bpm (barriles/min)
-st.session_state.bpm = st.session_state.agua_val / 2.52 / 42  
-
+# --- Sliders sincronizados ---
 col1, col2 = st.columns(2)
 with col1:
     gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 with col2:
-    bpm = st.slider(
-        "Seleccione BPM (barriles por minuto)",
-        0.5, 20.0, float(st.session_state.bpm), 0.1,
-        key="bpm_slider"
-    )
+    bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
 
 # --- Cálculos ---
 gal_per_min = bpm * 42
 l_per_min = gal_per_min * 3.785
 m3_per_h = l_per_min * 0.06
 
+# Si no estamos editando, que el slider actualice el caudal agua
+if not st.session_state.get("editing", False):
+    st.session_state.agua_val = round(m3_per_h)
+
 q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- CSS tarjetas ---
+# --- CSS para tarjetas ---
 st.markdown("""
 <style>
 .card {
@@ -55,7 +50,6 @@ st.markdown("""
     border: 1px solid #888;
     border-radius: 8px;
     text-align: center;
-    cursor: pointer;
 }
 .card .value {
     font-size: 28px;
@@ -74,21 +68,25 @@ col1, col2 = st.columns(2)
 with col1:
     st.markdown("### 💧 Caudal de Agua")
 
-    if st.session_state.edit_mode:
-        new_val = st.number_input(
-            "Editar caudal (m³/h)", 
-            value=float(st.session_state.agua_val), 
-            step=1.0,
-            key="agua_edit"
-        )
-        st.session_state.agua_val = int(new_val)
-        st.session_state.edit_mode = False  # vuelve a mostrar tarjeta
-    else:
-        if st.button(
-            f"{st.session_state.agua_val} m³/h", 
-            key="agua_card"
-        ):
-            st.session_state.edit_mode = True
+    # Input editable directamente en la tarjeta
+    agua_input = st.text_input(
+        "Editar caudal de agua",
+        value=str(st.session_state.agua_val),
+        key="agua_edit",
+        label_visibility="collapsed"
+    )
+
+    # Si cambia el valor, actualiza session_state y sincroniza
+    try:
+        new_val = float(agua_input)
+        st.session_state.agua_val = new_val
+    except ValueError:
+        pass  # si no es número, ignora
+
+    st.markdown(
+        f"<div class='card'><div class='value'>{st.session_state.agua_val:.0f}</div><div class='unit'>m³/h</div></div>",
+        unsafe_allow_html=True
+    )
 
 with col2:
     st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='25'> Caudal Químico", unsafe_allow_html=True)
