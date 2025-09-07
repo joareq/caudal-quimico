@@ -49,25 +49,26 @@ q_quimico_l_h     = q_quimico_l_min * 60
 # --- Layout ---
 col1, col2 = st.columns(2)
 
-# Caudal Agua (con tarjeta igual que químico)
+# Caudal Agua
 with col1:
     st.markdown("### 💧 Caudal de Agua")
 
     if st.session_state.edit_agua:
-        nuevo = st.number_input("Modificar [m³/h]:", value=round(m3_per_h, 2), step=0.1, label_visibility="collapsed")
+        # Cuadro editable dentro del card
+        nuevo = st.number_input("", value=round(m3_per_h, 2), step=0.1, label_visibility="collapsed")
         cc1, cc2 = st.columns([1,1])
         with cc1:
-            if st.button("Guardar"):
+            if st.button("✔ Guardar", use_container_width=True):
                 denom = 42*3.785*0.06
                 st.session_state.bpm = max(0.5, min(20.0, float(nuevo)/denom))
                 st.session_state.edit_agua = False
                 st.rerun()
         with cc2:
-            if st.button("Cancelar"):
+            if st.button("✖ Cancelar", use_container_width=True):
                 st.session_state.edit_agua = False
                 st.rerun()
     else:
-        # Tarjeta clickeable con mismo estilo que químico
+        # Mostrar valor en tarjeta clickeable
         if st.button("", key="agua_card", help="Haz clic para editar"):
             st.session_state.edit_agua = True
             st.rerun()
