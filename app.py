@@ -35,9 +35,8 @@ if "edit_agua" not in st.session_state:
 def sync_from_bpm():
     st.session_state.agua_m3h = round(st.session_state.bpm * FACTOR_M3H_POR_BPM, 2)
 
-def sync_from_agua_and_close():
+def sync_from_agua():
     st.session_state.bpm = round(st.session_state.agua_m3h / FACTOR_M3H_POR_BPM, 2)
-    st.session_state.edit_agua = False  # volver al cuadro con un solo cambio
 
 # =========
 # Sliders
@@ -81,12 +80,12 @@ st.markdown(
     }
     .card .value { font-size:30px; font-weight:700; line-height:1; }
     .card .unit  { font-size:14px; color:#cfcfcf; margin-top:6px; }
-    .water-input input {
+    .stNumberInput input {
         font-size:30px !important;
         font-weight:700 !important;
         text-align:center !important;
     }
-    .water-input .stNumberInput {
+    .stNumberInput {
         width: 140px !important;
         height: 140px !important;
     }
@@ -105,19 +104,16 @@ with col_agua:
     st.markdown("### 💧 Caudal de Agua")
 
     if st.session_state.edit_agua:
-        with st.container():
-            st.markdown("<div class='card water-input'>", unsafe_allow_html=True)
-            st.number_input(
-                "Editar caudal (m³/h)",
-                min_value=0.0,
-                max_value=1000.0,
-                step=1.0,
-                value=float(st.session_state.agua_m3h),
-                key="agua_m3h",
-                on_change=sync_from_agua_and_close,
-                label_visibility="collapsed",
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
+        st.number_input(
+            "Editar caudal (m³/h)",
+            min_value=0.0,
+            max_value=1000.0,
+            step=1.0,
+            value=float(st.session_state.agua_m3h),
+            key="agua_m3h",
+            on_change=sync_from_agua,
+            label_visibility="collapsed",
+        )
     else:
         if st.button(
             f"**{int(round(st.session_state.agua_m3h))}**\n m³/h",
