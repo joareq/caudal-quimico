@@ -36,7 +36,7 @@ st.markdown(
         background-color: transparent !important;
         color: #00AEEF !important;
         font-weight: bold !important;
-        font-size: 20px !important;       /* 👈 Ajustá este valor a tu gusto */
+        font-size: 30px !important;       /* 👈 Ajustá este valor a tu gusto */
         text-shadow: 1px 1px 2px #00000080; /* sombra sutil para visibilidad */
     }
     </style>
@@ -74,6 +74,7 @@ c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
 c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
 c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+
 
 
 
