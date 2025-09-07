@@ -20,7 +20,7 @@ if "Fnom" not in st.session_state:
     st.session_state["Fnom"] = 50.0  # Hz nominal
 
 if "Fmax" not in st.session_state:
-    st.session_state["Fmax"] = 50.0  # Hz máxima
+    st.session_state["Fmax"] = 75.0  # Hz máxima (forzada)
 
 # --- Logo y título ---
 st.markdown(
@@ -37,7 +37,7 @@ st.markdown(
 bpm = st.slider("Seleccione BPM", 0.5, 20.0, 5.0, 0.1)
 gpt = st.slider("Seleccione GPT", 0.0, 10.0, 1.5, 0.1)
 
-# --- Cálculos ---
+# --- Cálculos agua y químico ---
 gal_per_min = bpm * 42
 l_per_min = gal_per_min * 3.785
 m3_per_h = l_per_min * 0.06
@@ -88,18 +88,18 @@ Qnom = st.session_state["Qnom"]
 Fnom = st.session_state["Fnom"]
 Fmax = st.session_state["Fmax"]
 
-# Calcular Qmax oculto
+# Calcular Qmax en función de la frecuencia forzada
 Qmax = Qnom * (Fmax / Fnom)
 
 Qset = q_quimico_l_h
 
 if Qset > Qmax:
-    st.error("⚠️ El caudal químico calculado supera el caudal máximo de la bomba (Qmax).")
+    st.error("⚠️ El caudal químico calculado supera el caudal máximo alcanzable con la frecuencia configurada (Fmax).")
 else:
     vel = (Qset / Qmax) * 100
     st.metric("Velocidad [%]", f"{vel:.1f}")
 
-    # Solo mostrar frecuencia si está abierta la configuración
+    # Solo mostrar frecuencia si está en configuración
     if st.session_state["show_config"]:
         fset = (Qset / Qmax) * Fmax
         st.metric("Frecuencia [Hz]", f"{fset:.2f}")
@@ -125,7 +125,7 @@ if st.session_state["show_config"]:
     )
     st.session_state["Fmax"] = st.number_input(
         "Frecuencia máxima de trabajo [Hz]",
-        min_value=1.0,
+        min_value=st.session_state["Fnom"],
         value=st.session_state["Fmax"],
         step=1.0
     )
