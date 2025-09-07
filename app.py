@@ -35,7 +35,7 @@ m3_per_h = l_per_min * 0.06
 
 q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
-q_quimico_l_h = q_quimico_l_min * 60
+q_quimico_l_h = q_quimico_l_min * 60  # <<< lo usamos en los cálculos con Qmax
 
 # --- Caudal Agua ---
 st.subheader("💧 Caudal Agua")
@@ -77,10 +77,10 @@ if st.button(valor_q, key="btn_quimico"):
 st.subheader("⚡ Cálculo Frecuencia Variador")
 
 # Valores por defecto
-Qmax = 100.0
-Fmax = 75.0
+Qmax = 80.0   # [L/h]
+Fmax = 50.0   # [Hz]
 
-Qset = q_quimico_l_min  # se toma el caudal químico en L/min
+Qset = q_quimico_l_h  # usamos L/h para comparar contra Qmax
 
 if Qset > Qmax:
     st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
@@ -101,8 +101,8 @@ if st.button("⚙️ Configuración"):
 
 if st.session_state["show_config"]:
     st.subheader("⚙️ Parámetros de la Bomba")
-    Qmax = st.number_input("Caudal máximo bomba [L/min]", min_value=1.0, value=100.0, step=1.0, key="Qmax")
-    Fmax = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=75.0, step=1.0, key="Fmax")
+    Qmax = st.number_input("Caudal máximo bomba [L/h]", min_value=1.0, value=80.0, step=1.0, key="Qmax")
+    Fmax = st.number_input("Frecuencia máxima variador [Hz]", min_value=1.0, value=50.0, step=1.0, key="Fmax")
 
     # recalcular con valores configurados
     if Qset > Qmax:
