@@ -22,8 +22,8 @@ st.markdown(
 col_sliders, col_resultados = st.columns([1, 1])
 
 with col_sliders:
-    gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
     bpm = st.slider("Seleccione BPM (barriles por minuto)", 0.5, 20.0, 5.0, 0.1)
+    gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 
 # --- Cálculos ---
 gal_per_min = bpm * 42
@@ -34,7 +34,7 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Convertir caudal de agua si está en barriles ---
+# --- Convertir caudal de agua según unidad seleccionada ---
 if st.session_state.unidad_agua == "m³/h":
     valor_agua = m3_per_h
     unidad = "m³/h"
@@ -45,13 +45,13 @@ else:
 with col_resultados:
     # --- Caudal de Agua ---
     st.markdown("### 💧 Caudal de Agua")
-    if st.button(f"{valor_agua:.0f} {unidad}", key="toggle_agua"):
+    if st.button(f"{valor_agua:.1f} {unidad}", key="toggle_agua"):
         # Cambiar unidad al pulsar
         if st.session_state.unidad_agua == "m³/h":
             st.session_state.unidad_agua = "BPM"
         else:
             st.session_state.unidad_agua = "m³/h"
-        st.rerun()   # ✅ ahora funciona con la versión nueva
+        st.rerun()
 
     # --- Caudal Químico ---
     st.markdown(
@@ -62,4 +62,4 @@ with col_resultados:
     c1, c2, c3 = st.columns(3)
     c1.metric("gal/min", f"{q_quimico_gal_min:.2f}")
     c2.metric("l/min", f"{q_quimico_l_min:.2f}")
-    c3.metric("l/h", f"{q_quimico_l_h:.0f}")
+    c3.metric("l/h", f"{q_quimico_l_h:.1f}")
