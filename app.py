@@ -113,3 +113,14 @@ with col2:
     with c2:
         st.markdown(f"""
         <div class="card">
+          <div class="value">{q_quimico_l_min:.2f}</div>
+          <div class="unit">l/min</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with c3:
+        st.markdown(f"""
+        <div class="card">
+          <div class="value">{q_quimico_l_h:.0f}</div>
+          <div class="unit">l/h</div>
+        </div>
+        """, unsafe_allow_html=True)
