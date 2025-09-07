@@ -3,6 +3,35 @@ import streamlit as st
 # --- Configuración de página ---
 st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
+# --- Estilos personalizados ---
+st.markdown(
+    """
+    <style>
+    .hmi-button {
+        display: inline-block;
+        background-color: #007BFF;
+        color: white !important;
+        font-size: 28px;
+        font-weight: bold;
+        border: none;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        text-align: center;
+        line-height: 70px;
+        cursor: pointer;
+        box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+        transition: all 0.1s ease-in-out;
+    }
+    .hmi-button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- Logo y título centrados ---
 st.markdown(
     """
@@ -21,10 +50,12 @@ if "bpm" not in st.session_state:
     st.session_state.bpm = 5.0
 
 # --- Controles GPT ---
+st.subheader("Control de GPT")
 col1, col2, col3 = st.columns([1, 3, 1])
 with col1:
     if st.button("➖", key="gpt_down"):
         st.session_state.gpt = max(0.0, st.session_state.gpt - 0.1)
+    st.markdown('<div class="hmi-button">➖</div>', unsafe_allow_html=True)
 with col2:
     st.session_state.gpt = st.slider(
         "Seleccione GPT (galones por mil)",
@@ -33,12 +64,15 @@ with col2:
 with col3:
     if st.button("➕", key="gpt_up"):
         st.session_state.gpt = min(10.0, st.session_state.gpt + 0.1)
+    st.markdown('<div class="hmi-button">➕</div>', unsafe_allow_html=True)
 
 # --- Controles BPM ---
+st.subheader("Control de BPM")
 col4, col5, col6 = st.columns([1, 3, 1])
 with col4:
     if st.button("➖", key="bpm_down"):
         st.session_state.bpm = max(0.5, st.session_state.bpm - 0.1)
+    st.markdown('<div class="hmi-button">➖</div>', unsafe_allow_html=True)
 with col5:
     st.session_state.bpm = st.slider(
         "Seleccione BPM (barriles por minuto)",
@@ -47,6 +81,7 @@ with col5:
 with col6:
     if st.button("➕", key="bpm_up"):
         st.session_state.bpm = min(20.0, st.session_state.bpm + 0.1)
+    st.markdown('<div class="hmi-button">➕</div>', unsafe_allow_html=True)
 
 # --- Cálculos ---
 gpt = st.session_state.gpt
