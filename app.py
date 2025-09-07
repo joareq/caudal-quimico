@@ -7,13 +7,12 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="centered")
 st.markdown(
     """
     <style>
-    /* Número del slider */
+    /* Slider */
     div[data-baseweb="slider"] span {
         font-size: 18px !important;
         color: #00AEEF !important;
         font-weight: bold;
     }
-    /* Círculo del slider */
     div[data-baseweb="slider"] div[role="slider"] {
         background-color: #00AEEF !important;
         border: 2px solid white !important;
@@ -25,6 +24,11 @@ st.markdown(
         border-radius: 5px;
         display: inline-block;
         margin-top: 10px;
+        text-align: center;
+    }
+    .big {
+        font-size: 26px;
+        font-weight: bold;
     }
     </style>
     """,
@@ -66,16 +70,14 @@ with col1:
     )
 
 with col2:
-    st.markdown("### Caudal Químico")
+    st.markdown("### <img src='https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png' width='40'> Caudal Químico",
+                unsafe_allow_html=True)
     st.markdown(
         f"""
         <div class='box'>
-            <p><b>{q_quimico_gal_min:.2f}</b> gal/min</p>
-            <p><b>{q_quimico_l_min:.2f}</b> l/min</p>
-            <p><b>{q_quimico_l_h:.0f}</b> l/h</p>
-            <div style="text-align:center; margin-top:10px;">
-                <img src="https://raw.githubusercontent.com/joareq/caudal-quimico/main/icono_skid.png" width="70">
-            </div>
+            <p class='big'>{q_quimico_gal_min:.2f} gal/min</p>
+            <p class='big'>{q_quimico_l_min:.2f} l/min</p>
+            <p class='big'>{q_quimico_l_h:.0f} l/h</p>
         </div>
         """,
         unsafe_allow_html=True
