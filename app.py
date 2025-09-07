@@ -7,28 +7,21 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="centered")
 st.markdown(
     """
     <style>
-    /* Slider */
-    div[data-baseweb="slider"] span {
-        font-size: 18px !important;
-        color: #00AEEF !important;
-        font-weight: bold;
-    }
-    div[data-baseweb="slider"] div[role="slider"] {
-        background-color: #00AEEF !important;
-        border: 2px solid white !important;
-    }
-    /* Caja resultados */
     .box {
         border: 1px solid white;
-        padding: 10px;
+        padding: 15px;
         border-radius: 5px;
         display: inline-block;
-        margin-top: 10px;
+        margin: 5px;
         text-align: center;
+        min-width: 120px;
     }
     .big {
-        font-size: 26px;
+        font-size: 28px;
         font-weight: bold;
+    }
+    .unit {
+        font-size: 16px;
     }
     </style>
     """,
@@ -59,13 +52,13 @@ q_quimico_gal_min = (gpt / 1000) * gal_per_min
 q_quimico_l_min = q_quimico_gal_min * 3.785
 q_quimico_l_h = q_quimico_l_min * 60
 
-# --- Layout de resultados ---
+# --- Layout ---
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("### 💧 Caudal de Agua")
     st.markdown(
-        f"<div class='box'><h2 style='margin:0;'>{m3_per_h:.0f} m³/h</h2></div>",
+        f"<div class='box'><span class='big'>{m3_per_h:.0f}</span><br><span class='unit'>m³/h</span></div>",
         unsafe_allow_html=True
     )
 
@@ -74,10 +67,10 @@ with col2:
                 unsafe_allow_html=True)
     st.markdown(
         f"""
-        <div class='box'>
-            <p class='big'>{q_quimico_gal_min:.2f} gal/min</p>
-            <p class='big'>{q_quimico_l_min:.2f} l/min</p>
-            <p class='big'>{q_quimico_l_h:.0f} l/h</p>
+        <div>
+            <div class='box'><span class='big'>{q_quimico_gal_min:.2f}</span><br><span class='unit'>gal/min</span></div>
+            <div class='box'><span class='big'>{q_quimico_l_min:.2f}</span><br><span class='unit'>l/min</span></div>
+            <div class='box'><span class='big'>{q_quimico_l_h:.0f}</span><br><span class='unit'>l/h</span></div>
         </div>
         """,
         unsafe_allow_html=True
