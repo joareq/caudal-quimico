@@ -7,23 +7,34 @@ st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 st.markdown(
     """
     <style>
+    /* Estilo base para todos los botones */
     div[data-testid="stButton"] button {
-        background-color: #007BFF;
         color: white;
-        font-size: 28px;
+        font-size: 32px;
         font-weight: bold;
         border: none;
         border-radius: 50%;
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
         text-align: center;
-        line-height: 70px;
         cursor: pointer;
         box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
         transition: all 0.1s ease-in-out;
     }
-    div[data-testid="stButton"] button:hover {
-        background-color: #0056b3;
+    /* Botón rojo (restar) */
+    div[data-testid="stButton"] button.minus {
+        background-color: #dc3545;
+    }
+    div[data-testid="stButton"] button.minus:hover {
+        background-color: #a71d2a;
+        transform: scale(1.05);
+    }
+    /* Botón verde (sumar) */
+    div[data-testid="stButton"] button.plus {
+        background-color: #28a745;
+    }
+    div[data-testid="stButton"] button.plus:hover {
+        background-color: #1c7430;
         transform: scale(1.05);
     }
     </style>
@@ -52,31 +63,35 @@ if "bpm" not in st.session_state:
 st.subheader("Control de GPT")
 col1, col2, col3 = st.columns([1, 3, 1])
 with col1:
-    if st.button("➖ GPT"):
+    if st.button("➖", key="gpt_down"):
         st.session_state.gpt = max(0.0, st.session_state.gpt - 0.1)
+    st.markdown("<script>document.querySelector('button[kind=\"secondary\"]:nth-of-type(1)').classList.add('minus');</script>", unsafe_allow_html=True)
 with col2:
     st.session_state.gpt = st.slider(
         "Seleccione GPT (galones por mil)",
         0.0, 10.0, st.session_state.gpt, 0.1, key="gpt_slider"
     )
 with col3:
-    if st.button("➕ GPT"):
+    if st.button("➕", key="gpt_up"):
         st.session_state.gpt = min(10.0, st.session_state.gpt + 0.1)
+    st.markdown("<script>document.querySelector('button[kind=\"secondary\"]:nth-of-type(2)').classList.add('plus');</script>", unsafe_allow_html=True)
 
 # --- Controles BPM ---
 st.subheader("Control de BPM")
 col4, col5, col6 = st.columns([1, 3, 1])
 with col4:
-    if st.button("➖ BPM"):
+    if st.button("➖", key="bpm_down"):
         st.session_state.bpm = max(0.5, st.session_state.bpm - 0.1)
+    st.markdown("<script>document.querySelector('button[kind=\"secondary\"]:nth-of-type(3)').classList.add('minus');</script>", unsafe_allow_html=True)
 with col5:
     st.session_state.bpm = st.slider(
         "Seleccione BPM (barriles por minuto)",
         0.5, 20.0, st.session_state.bpm, 0.1, key="bpm_slider"
     )
 with col6:
-    if st.button("➕ BPM"):
+    if st.button("➕", key="bpm_up"):
         st.session_state.bpm = min(20.0, st.session_state.bpm + 0.1)
+    st.markdown("<script>document.querySelector('button[kind=\"secondary\"]:nth-of-type(4)').classList.add('plus');</script>", unsafe_allow_html=True)
 
 # --- Cálculos ---
 gpt = st.session_state.gpt
@@ -106,5 +121,4 @@ st.markdown(
 st.markdown("### 🔹 Resultados Químico")
 c4, c5, c6 = st.columns(3)
 c4.metric("Caudal químico [gal/min]", f"{q_quimico_gal_min:.4f}")
-c5.metric("Caudal químico [L/min]", f"{q_quimico_l_min:.4f}")
-c6.metric("Caudal químico [L/h]", f"{q_quimico_l_h:.2f}")
+c5.metric("Caudal quí
