@@ -10,18 +10,10 @@ st.markdown("""
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   border:1px solid #ccc; border-radius:8px;
   font-weight:bold; margin:6px; background:transparent;
+  cursor:pointer;
 }
 .card .value { font-size:28px; }
 .card .unit  { font-size:14px; margin-top:6px; }
-
-.square-btn > div.stButton > button {
-  width: 120px; height: 120px;
-  border:1px solid #ccc; border-radius:8px;
-  background:transparent; color:#fff; font-weight:bold;
-  font-size:26px; line-height:1.1; white-space:pre-line;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:0;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -75,11 +67,10 @@ with col1:
                 st.session_state.edit_agua = False
                 st.rerun()
     else:
-        st.markdown('<div class="square-btn">', unsafe_allow_html=True)
-        if st.button(f"{int(round(m3_per_h))}\n m³/h", key="btn_agua"):
+        # Igual que químicos: cuadrado clickeable
+        if st.button(f"{int(round(m3_per_h))} m³/h", key="agua_card"):
             st.session_state.edit_agua = True
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # Caudal Químico
 with col2:
