@@ -13,11 +13,14 @@ if "unidad_quimico" not in st.session_state:
 if "show_config" not in st.session_state:
     st.session_state["show_config"] = False
 
-if "Qmax" not in st.session_state:
-    st.session_state["Qmax"] = 80.0  # [L/h] por defecto
+if "Qnom" not in st.session_state:
+    st.session_state["Qnom"] = 80.0  # L/h nominal
+
+if "Fnom" not in st.session_state:
+    st.session_state["Fnom"] = 50.0  # Hz nominal
 
 if "Fmax" not in st.session_state:
-    st.session_state["Fmax"] = 50.0  # [Hz] por defecto
+    st.session_state["Fmax"] = 50.0  # Hz máxima
 
 # --- Logo y título ---
 st.markdown(
@@ -80,17 +83,26 @@ if st.button(valor_q, key="btn_quimico"):
 # --- Cálculo Bomba ---
 st.subheader("⚡ Cálculo Bomba")
 
-Qset = q_quimico_l_h
-Qmax = st.session_state["Qmax"]
+# Obtener parámetros configurados
+Qnom = st.session_state["Qnom"]
+Fnom = st.session_state["Fnom"]
 Fmax = st.session_state["Fmax"]
 
+# Calcular Qmax oculto
+Qmax = Qnom * (Fmax / Fnom)
+
+Qset = q_quimico_l_h
+
 if Qset > Qmax:
-    st.error("⚠️ El caudal químico calculado supera el caudal máximo configurado de la bomba.")
+    st.error("⚠️ El caudal químico calculado supera el caudal máximo de la bomba (Qmax).")
 else:
     vel = (Qset / Qmax) * 100
-    fset = (Qset / Qmax) * Fmax
-
     st.metric("Velocidad [%]", f"{vel:.1f}")
+
+    # Solo mostrar frecuencia si está abierta la configuración
+    if st.session_state["show_config"]:
+        fset = (Qset / Qmax) * Fmax
+        st.metric("Frecuencia [Hz]", f"{fset:.2f}")
 
 # --- CONFIGURACIÓN AL FINAL ---
 st.markdown("---")
@@ -99,20 +111,21 @@ if st.button("⚙️ Configuración"):
 
 if st.session_state["show_config"]:
     st.subheader("⚙️ Parámetros de la Bomba")
-    st.session_state["Qmax"] = st.number_input(
-        "Caudal máximo bomba [L/h]",
+    st.session_state["Qnom"] = st.number_input(
+        "Caudal nominal bomba [L/h]",
         min_value=1.0,
-        value=st.session_state["Qmax"],
+        value=st.session_state["Qnom"],
+        step=1.0
+    )
+    st.session_state["Fnom"] = st.number_input(
+        "Frecuencia nominal bomba [Hz]",
+        min_value=1.0,
+        value=st.session_state["Fnom"],
         step=1.0
     )
     st.session_state["Fmax"] = st.number_input(
-        "Frecuencia máxima variador [Hz]",
+        "Frecuencia máxima de trabajo [Hz]",
         min_value=1.0,
         value=st.session_state["Fmax"],
         step=1.0
     )
-
-    # Mostrar frecuencia solo mientras está abierta la configuración
-    if Qset <= st.session_state["Qmax"]:
-        fset = (Qset / st.session_state["Qmax"]) * st.session_state["Fmax"]
-        st.metric("Frecuencia [Hz]", f"{fset:.2f}")
