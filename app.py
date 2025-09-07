@@ -1,18 +1,18 @@
 import streamlit as st
 
 # --- Configuración de página ---
-st.set_page_config(page_title="Caudal Químico", page_icon="💧", layout="wide")
+st.set_page_config(page_title="Cálculo caudal químico", layout="wide")
 
-st.title("💧 Calculadora de Caudal Químico (GPT vs BPM)")
+# --- Logo e título ---
+st.image("logo.png", width=200)   # usa el nombre exacto del archivo en tu repo
+st.title("Cálculo caudal químico")
 
 # --- Inputs con sliders ---
 col1, col2 = st.columns(2)
-
 with col1:
-    gpt = st.slider("Seleccione GPT (galones por mil)", min_value=0.0, max_value=10.0, value=1.5, step=0.1)
-
+    gpt = st.slider("Seleccione GPT (galones por mil)", 0.0, 10.0, 1.5, 0.1)
 with col2:
-    bpm = st.slider("Seleccione caudal de agua [BPM]", min_value=0.0, max_value=20.0, value=5.0, step=0.5)
+    bpm = st.slider("Seleccione caudal de agua [BPM]", 0.0, 20.0, 5.0, 0.5)
 
 # --- Cálculos ---
 gal_per_min = bpm * 42
